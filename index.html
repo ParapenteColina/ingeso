@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novedades - Action Figure Store</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <a href="index.html">FIGURAS<span>PRO</span></a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Novedades</a></li>
+                <li><a href="inventario.html">Catálogo</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar figura...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="user-options">
+            <div class="profile-menu">
+                <i class="fa-solid fa-user"></i>
+                <ul class="dropdown">
+                    <li><a href="#">Mi Perfil</a></li>
+                    <li><a href="#">Mis Órdenes</a></li>
+                    <li id="admin-link-container"></li> 
+                    <li><a href="#">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+            <a href="#" class="cart-button">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-counter">0</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="info-panel">
+            <div class="panel-image">
+                <img src="images/peacemaker.jpeg" alt="Próximos lanzamientos de figuras de Thanos">
+            </div>
+            <div class="panel-content">
+                <h2>Próximos Lanzamientos</h2>
+                <p>
+                    ¡Prepárate para lo que viene! Estamos trabajando para traer las figuras más esperadas del año. Desde los héroes más icónicos hasta los villanos más temibles, nuestra próxima colección está diseñada para impresionar. ¡No te pierdas las actualizaciones!
+                </p>
+                <a href="#" class="btn-more-info">Ver Avances</a>
+            </div>
+        </section>
+
+        <section class="info-panel panel-layout-reverse">
+            <div class="panel-image">
+               <img src="images/tortuganinjas.jpeg" alt="figura clasica de los 80">
+            </div>
+            </div>
+            <div class="panel-content">
+                <h2>Clásicos que Vuelven</h2>
+                <p>
+                    La nostalgia está en el aire. Hemos relanzado una línea exclusiva de figuras clásicas de los años 80, remasterizadas con técnicas modernas pero manteniendo la esencia que las hizo legendarias. ¡Un viaje en el tiempo para todo coleccionista!
+                </p>
+                <a href="#" class="btn-more-info">Explorar Clásicos</a>
+            </div>
+        </section>
+
+        <section class="info-panel">
+            <div class="panel-image">
+               <img src="images/gorgonitas.jpeg" alt="Comunidad de Coleccionistas">
+            </div>
+            <div class="panel-content">
+                <h2>Únete a la Comunidad</h2>
+                <p>
+                    Ser coleccionista es más que un hobby, es una pasión. Únete a nuestros foros y redes sociales para compartir tus colecciones, intercambiar figuras y participar en eventos exclusivos con otros fanáticos como tú.
+                </p>
+                <a href="#" class="btn-more-info">Participar Ahora</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

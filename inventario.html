@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Action Figure Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <a href="index.html">FIGURAS<span>PRO</span></a>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html">Novedades</a></li>
+                <li><a href="inventario.html">Catálogo</a></li>
+                <li><a href="#">Ofertas</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar figura...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="user-options">
+            <div class="profile-menu">
+                <i class="fa-solid fa-user"></i>
+                <ul class="dropdown">
+                    <li><a href="#">Mi Perfil</a></li>
+                    <li><a href="#">Mis Órdenes</a></li>
+                    <li id="admin-link-container"></li> 
+                    <li><a href="#">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+            <a href="#" class="cart-button">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-counter">0</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="inventory-header">
+            <h1>Nuestro Catálogo Completo</h1>
+            <div class="filter-box">
+                <input type="text" placeholder="Filtrar por nombre...">
+                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+
+        <div class="product-grid-inventory">
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Iron+Man+MK+50" alt="Figura de Iron Man">
+                <h3>Iron Man Mark 50</h3>
+                <p class="product-price">$89.990</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Spider-Man" alt="Figura de Spider-Man">
+                <h3>Spider-Man (Advanced Suit)</h3>
+                <p class="product-price">$79.990</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Batman" alt="Figura de Batman">
+                <h3>Batman (The Dark Knight)</h3>
+                <p class="product-price">$95.990</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Goku+SSJ" alt="Figura de Goku">
+                <h3>Son Goku Super Saiyan</h3>
+                <p class="product-price">$75.000</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+            
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Wonder+Woman" alt="Figura de Wonder Woman">
+                <h3>Wonder Woman (1984)</h3>
+                <p class="product-price">$84.990</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+            <div class="product-card">
+                
+                <img src="https://via.placeholder.com/300x300.png?text=Darth+Vader" alt="Figura de Darth Vader">
+                <h3>Darth Vader</h3>
+                <p class="product-price">$99.990</p>
+                <button class="add-to-cart-btn">Añadir al Carrito</button>
+            </div>
+        </div>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>
