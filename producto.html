@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario - Action Figure Store</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Detalle del Producto - FigurasPRO</title>
+    <link rel="stylesheet" href="style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -28,12 +28,6 @@
         <div class="user-options">
             <div class="profile-menu">
                 <i class="fa-solid fa-user"></i>
-                <ul class="dropdown">
-                    <li><a href="#">Mi Perfil</a></li>
-                    <li><a href="#">Mis Órdenes</a></li>
-                    <li id="admin-link-container"></li> 
-                    <li><a href="#">Cerrar Sesión</a></li>
-                </ul>
             </div>
             <a href="#" class="cart-button">
                 <i class="fa-solid fa-cart-shopping"></i>
@@ -43,19 +37,10 @@
     </header>
 
     <main>
-        <div class="inventory-header">
-            <h1>Nuestro Catálogo Completo</h1>
-            <div class="filter-box">
-                <input type="text" placeholder="Filtrar por nombre...">
-                <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        <div id="producto-detalle-container" class="product-detail">
             </div>
-        </div>
-
-        <div class="product-grid-inventory">
-            
-        </div>
     </main>
     
-    <script src="script.js"></script>
+    <script src="producto.js"></script>
 </body>
 </html>

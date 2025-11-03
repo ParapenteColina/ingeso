@@ -13,6 +13,12 @@ body {
     background-color: #f4f4f9;
     color: #333;
 }
+/* * NUEVA REGLA GLOBAL DE TIPOGRAFÍA:
+ * Aplica 'Bebas Neue' a todos tus títulos y elementos de "marca"
+ */
+h1, h2, h3, .logo a, .main-nav a {
+    font-family: 'Bebas Neue', sans-serif;
+}
 
 /* --- Barra de Navegación Superior --- */
 .main-header {
@@ -29,7 +35,6 @@ body {
 
 .logo a {
     text-decoration: none;
-    font-family: 'Bebas Neue', sans-serif; 
     font-size: 36px;
     color: #fdd835; /* Amarillo brillante */
     letter-spacing: 2px;
@@ -51,7 +56,6 @@ body {
     color: #fff;  /* Texto blanco para mayor contraste */
     font-weight: 700;
     transition: color 0.3s;
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 24px;
     letter-spacing: 1px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
@@ -129,7 +133,7 @@ body {
     padding: 12px 15px;
     text-decoration: none;
     color: #333;
-    font-family: 'Roboto', sans-serif;
+    
 }
 
 .dropdown li a:hover {
@@ -158,23 +162,27 @@ body {
 main h1 {
     margin-bottom: 30px;
     font-size: 50px;
-    font-family: 'Bebas Neue', sans-serif;
     color: #2c3e50;
     letter-spacing: 2px;
     text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
 }
 
-.product-grid, .product-grid-inventory {
-    display: grid;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+/* 1. Define la clase base con todo lo común Y el layout por defecto */
 .product-grid {
+    display: grid; 
+    gap: 30px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
+
+/* 2. El modificador SOLO cambia la propiedad que necesita */
 .product-grid-inventory {
-    grid-template-columns: repeat(2, 1fr);
+    display: grid; /* <--- ¡Esta es la línea que faltaba! */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 30px; /* Añade espacio entre las tarjetas */
+    max-width: 1200px; /* Opcional, pero recomendado */
+    margin: 0 auto; /* Opcional, para centrar la cuadrícula */
 }
 
 .product-card {
@@ -193,8 +201,9 @@ main h1 {
 }
 
 .product-card img {
-    max-width: 100%;
-    height: auto;
+    width: 100%;
+    height: 350px; /* Dales una altura fija (juega con este número) */
+    object-fit: cover; /* Evita que la imagen se deforme */
     border-radius: 5px;
     margin-bottom: 15px;
 }
@@ -202,7 +211,6 @@ main h1 {
 .product-card h3 {
     font-size: 24px;
     margin-bottom: 10px;
-    font-family: 'Bebas Neue', sans-serif;
     color: #34495e;
 }
 
@@ -307,7 +315,6 @@ main h1 {
 }
 
 .banner-text h2 {
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 38px;
     color: #2c3e50;
     margin-bottom: 15px;
@@ -315,7 +322,6 @@ main h1 {
 }
 
 .banner-text p {
-    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 25px;
@@ -340,7 +346,6 @@ main h1 {
 
 /* --- Estilos para los Subtítulos de Sección (h2) --- */
 main h2 {
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 40px;
     color: #34495e;
     margin-top: 60px;
@@ -364,7 +369,6 @@ main h2 {
 }
 
 .sidebar-header h3 {
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 28px;
     text-align: center;
     margin-bottom: 30px;
@@ -407,7 +411,6 @@ main h2 {
 }
 
 .admin-content h1 {
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 40px;
     margin-bottom: 30px;
 }
@@ -454,7 +457,6 @@ main h2 {
 }
 
 .chart-container h2 {
-    font-family: 'Bebas Neue', sans-serif;
     margin-bottom: 25px;
     text-align: center;
 }
@@ -482,7 +484,6 @@ main h2 {
     bottom: -25px;
     left: 0;
     right: 0;
-    font-family: 'Roboto', sans-serif;
     color: #555;
 }
 /* --- Estilos para los Paneles Verticales de la Página Principal --- */
@@ -525,16 +526,25 @@ main {
 }
 
 .panel-content h2 {
-    font-family: 'Bebas Neue', sans-serif;
     font-size: 42px;
     color: #2c3e50;
     margin-bottom: 20px;
 }
 
 .panel-content p {
-    font-family: 'Roboto', sans-serif;
     font-size: 18px;
     line-height: 1.7;
     margin-bottom: 30px;
     color: #555;
+}
+
+/* style.css */
+.product-title-link,
+.product-title-link:visited {
+    text-decoration: none;
+    color: inherit; /* Hereda el color del texto normal */
+}
+
+.product-title-link:hover {
+    text-decoration: underline; /* Opcional: subraya al pasar el mouse */
 }
