@@ -709,3 +709,55 @@ main {
     font-size: 14px;
     color: #95a5a6; /* Un gris claro para el copyright */
 }
+
+/* --- Estilos para Sugerencias de Búsqueda --- */
+
+/* Hacemos al padre "relative" para que la caja 
+   de sugerencias "absolute" se posicione bien */
+.search-bar {
+    position: relative; /* ¡MUY IMPORTANTE! */
+}
+
+.suggestions-box {
+    display: none; /* Oculta por defecto */
+    position: absolute;
+    top: 100%; /* Justo debajo del input */
+    left: 0;
+    width: 100%; /* Mismo ancho que el input */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 999; /* Por encima de otro contenido */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.suggestion-item {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: #f4f4f9;
+}
+
+.suggestion-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+
+.suggestion-item span {
+    color: #333;
+    font-size: 14px;
+}
