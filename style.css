@@ -709,3 +709,199 @@ main {
     font-size: 14px;
     color: #95a5a6; /* Un gris claro para el copyright */
 }
+
+/* --- ESTILOS PARA LA PÁGINA DEL CARRITO --- */
+
+/* Contenedor principal de la página */
+.carrito-page {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.carrito-page h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Layout de 2 columnas (Grid es perfecto para esto) */
+.carrito-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 para items, 1/3 para resumen */
+    gap: 2rem;
+}
+
+/* --- COLUMNA IZQUIERDA (ITEMS) --- */
+.carrito-items {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Encabezado de la lista (Producto, Cantidad, Subtotal) */
+.items-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr; /* Debe coincidir con .carrito-item */
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f0f0f0;
+    color: #888;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+.header-cantidad, .header-subtotal {
+    text-align: center;
+}
+
+/* Estilo para cada item individual */
+.carrito-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr; /* 3 columnas */
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Columna 1: Info del producto (imagen + texto) */
+.item-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.item-info img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.item-details h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+.item-details p {
+    margin: 0.25rem 0;
+    color: #555;
+}
+
+/* Botón de eliminar (ícono y texto) */
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+    margin-top: 0.5rem;
+    transition: color 0.2s;
+}
+.btn-eliminar:hover {
+    color: #d9534f; /* Rojo al pasar el mouse */
+}
+.btn-eliminar .fa-trash {
+    margin-right: 0.25rem;
+}
+
+/* Columna 2: Input de cantidad */
+.item-cantidad {
+    display: flex;
+    justify-content: center;
+}
+.input-cantidad {
+    width: 60px;
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Columna 3: Subtotal del item */
+.item-subtotal {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.carrito-vacio {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* --- COLUMNA DERECHA (RESUMEN) --- */
+.carrito-resumen {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: fit-content; /* Para que no se estire */
+}
+
+.carrito-resumen h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.resumen-descuento {
+    font-size: 0.9rem;
+    color: #555;
+    padding-bottom: 1rem;
+}
+
+/* Líneas de Subtotal y Total */
+.resumen-total {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 1rem;
+}
+.total-linea {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+.total-linea span:last-child {
+    font-weight: 600;
+}
+.total-linea.total-final {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* Botones de Pago (Estilo Nike) */
+.btn-pagar-miembro,
+.btn-pagar-invitado {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 30px; /* Bordes redondeados */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-pagar-miembro {
+    background-color: #111111; /* Botón negro sólido */
+    color: #ffffff;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+.btn-pagar-miembro:hover {
+    background-color: #555;
+}
+
+.btn-pagar-invitado {
+    background-color: #ffffff;
+    color: #111111;
+    border: 1px solid #111111; /* Botón blanco con borde */
+}
+.btn-pagar-invitado:hover {
+    background-color: #f4f4f4;
+}
