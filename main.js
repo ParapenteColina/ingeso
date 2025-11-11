@@ -1,4 +1,4 @@
-// main.js (Versión actualizada con Autocompletar)
+// main.js (Versión con clic directo al producto)
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -9,15 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('header-placeholder').innerHTML = data;
 
             // --- LÓGICA DE BÚSQUEDA ---
-            
-            // 1. Seleccionamos los elementos por sus nuevos IDs
             const headerSearchInput = document.getElementById('header-search-input');
             const headerSearchButton = document.querySelector('.search-bar button');
             const suggestionsBox = document.getElementById('header-suggestions-box');
             
-            let typingTimer; // Un temporizador para esperar que el usuario termine de escribir
+            let typingTimer; 
 
-            // 2. Función que redirige
+            // Función que redirige al CATÁLOGO (para búsqueda general)
             const ejecutarBusqueda = (query) => {
                 const searchTerm = query || headerSearchInput.value.trim();
                 if (searchTerm) {
@@ -25,21 +23,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
-            // 3. Función que busca sugerencias en Supabase
+            // Función que busca sugerencias
             const buscarSugerencias = async () => {
                 const searchTerm = headerSearchInput.value.trim();
 
-                if (searchTerm.length < 2) { // No busques si es muy corto
+                if (searchTerm.length < 2) {
                     suggestionsBox.innerHTML = '';
                     suggestionsBox.style.display = 'none';
                     return;
                 }
 
-                // Hacemos una consulta ligera: solo 5 items, solo nombre e imagen
                 const { data: sugerencias, error } = await supabase
                     .from('productos')
-                    .select('id, nombre, imagen') // Pedimos solo lo necesario
-                    .ilike('nombre', `%${searchTerm}%`) // ilike = no sensible a mayúsculas
+                    .select('id, nombre, imagen') 
+                    .ilike('nombre', `%${searchTerm}%`)
                     .limit(5);
 
                 if (error || !sugerencias.length) {
@@ -48,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // 4. Mostramos las sugerencias
                 suggestionsBox.innerHTML = '';
                 sugerencias.forEach(item => {
                     const suggestionItem = document.createElement('div');
@@ -57,35 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img src="${item.imagen}" alt="${item.nombre}">
                         <span>${item.nombre}</span>
                     `;
-                    // Al hacer clic en una sugerencia:
+                    
+                    // --- ¡¡AQUÍ ESTÁ EL GRAN CAMBIO!! ---
+                    // Al hacer clic, ya no busca, va directo al producto
                     suggestionItem.addEventListener('click', () => {
-                        headerSearchInput.value = item.nombre; // Rellena el input
-                        ejecutarBusqueda(item.nombre); // Ejecuta la búsqueda
+                        window.location.href = `producto.html?id=${item.id}`;
                     });
+                    
                     suggestionsBox.appendChild(suggestionItem);
                 });
                 suggestionsBox.style.display = 'block';
             };
 
-            // 5. Añadimos los "listeners"
+            // "Listeners" (sin cambios, excepto que 'ejecutarBusqueda' solo se usa al presionar Enter/Botón)
             headerSearchButton.addEventListener('click', () => ejecutarBusqueda());
             
             headerSearchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
-                    clearTimeout(typingTimer); // Cancela el timer de sugerencias
-                    suggestionsBox.style.display = 'none'; // Oculta sugerencias
+                    clearTimeout(typingTimer); 
+                    suggestionsBox.style.display = 'none';
                     ejecutarBusqueda();
                 }
             });
 
-            // EL LISTENER "INPUT" (mientras escribes)
             headerSearchInput.addEventListener('input', () => {
-                clearTimeout(typingTimer); // Reinicia el timer
-                // Espera 300ms después de la última tecla antes de buscar
+                clearTimeout(typingTimer); 
                 typingTimer = setTimeout(buscarSugerencias, 300);
             });
 
-            // Oculta las sugerencias si se hace clic fuera
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.search-bar')) {
                     suggestionsBox.style.display = 'none';
@@ -97,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error al cargar el header:', error));
 
-    // Carga el Footer
-    fetch('footer.html') // (Tendrías que crear footer.html también)
+    // Carga el Footer (código sin cambios)
+    fetch('footer.html')
         .then(response => response.text())
         .then(data => {
             document.getElementById('footer-placeholder').innerHTML = data;
