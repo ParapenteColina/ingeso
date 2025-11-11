@@ -8,35 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlSearchTerm = urlParams.get('q'); //
 
-    // --- 2. MODIFICAMOS LA FUNCIÓN DE CARGA ---
     async function cargarProductos(searchTerm) {
         
         productGrid.innerHTML = '<h2>Cargando productos...</h2>';
         
-        // 1. Empezamos la consulta base
         let query = supabase
             .from('productos')
             .select('*')
-            .eq('activo', true); //
+            .eq('activo', true);
 
         // 2. Si hay un término de búsqueda, añadimos el filtro
         if (searchTerm) {
-            const searchString = `%${searchTerm}%`; //
-            // "ilike" no distingue mayúsculas/minúsculas
-            query = query.or(`nombre.ilike.${searchString},descripcion.ilike.${searchString}`); //
+            // Preparamos el string para la búsqueda
+            const searchString = `%${searchTerm}%`;
+            
+            // --- ¡AQUÍ ESTÁ EL ARREGLO DEL BUG! ---
+            // Esta es la sintaxis correcta para .or() con 
+            // valores que pueden tener espacios o paréntesis.
+            // (nombre.ilike."%valor%" O descripcion.ilike."%valor%")
+            query = query.or(`nombre.ilike."${searchString}",descripcion.ilike."${searchString}"`);
         }
 
         // 3. Ejecutamos la consulta final
-        const { data: productos, error } = await query; //
+        const { data: productos, error } = await query;
 
-        if (error) { //
+        if (error) {
             console.error('Error al cargar productos:', error);
             productGrid.innerHTML = '<p>Error al cargar productos. Intente más tarde.</p>';
             return;
         }
         
-        // 4. Verificamos si no se encontraron productos
-        if (productos.length === 0) { //
+        // El resto de la función (pasos 4 y 5) es idéntica
+        if (productos.length === 0) {
             if (searchTerm) {
                 productGrid.innerHTML = `<h2>No se encontraron resultados para "${searchTerm}"</h2>`;
             } else {
@@ -45,9 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 5. Mostramos los productos
         productGrid.innerHTML = ''; 
-        productos.forEach(producto => { //
+        productos.forEach(producto => {
             const cardHTML = `
                 <div class="product-card">
                     <a href="producto.html?id=${producto.id}">
