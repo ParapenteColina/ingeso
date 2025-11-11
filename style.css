@@ -906,7 +906,7 @@ main {
 .btn-pagar-invitado:hover {
     background-color: #f4f4f4;
 /* --- Estilo para Sugerencias de Búsqueda --- */
-
+}
 /* Hacemos al padre "relative" para que la caja 
    de sugerencias "absolute" se posicione bien */
 .search-bar {
