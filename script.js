@@ -1,44 +1,74 @@
+// script.js (Versión simplificada sin filtro local)
+
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const productGrid = document.querySelector('.product-grid-inventory');
 
-    // ¡Convertimos la función en "async" para poder "await"!
-    async function cargarProductos() {
+    // --- 1. LEER EL TÉRMINO DE BÚSQUEDA DE LA URL ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlSearchTerm = urlParams.get('q'); //
+
+    async function cargarProductos(searchTerm) {
         
-        // --- 1. LLAMADA A SUPABASE ---
-        // 'supabase' es la variable global que creamos en supabase-client.js
-        const { data: productos, error } = await supabase
-            .from('productos') // El nombre de tu tabla
-            .select('*')       // Selecciona todas las columnas
-            .eq('activo', true); // Filtra solo los productos activos
+        productGrid.innerHTML = '<h2>Cargando productos...</h2>';
+        
+        let query = supabase
+            .from('productos')
+            .select('*')
+            .eq('activo', true);
+
+        // 2. Si hay un término de búsqueda, añadimos el filtro
+        if (searchTerm) {
+            // Preparamos el string para la búsqueda
+            const searchString = `%${searchTerm}%`;
+            
+            // --- ¡AQUÍ ESTÁ EL ARREGLO DEL BUG! ---
+            // Esta es la sintaxis correcta para .or() con 
+            // valores que pueden tener espacios o paréntesis.
+            // (nombre.ilike."%valor%" O descripcion.ilike."%valor%")
+            query = query.or(`nombre.ilike."${searchString}",descripcion.ilike."${searchString}"`);
+        }
+
+        // 3. Ejecutamos la consulta final
+        const { data: productos, error } = await query;
 
         if (error) {
             console.error('Error al cargar productos:', error);
             productGrid.innerHTML = '<p>Error al cargar productos. Intente más tarde.</p>';
             return;
         }
+        
+        // El resto de la función (pasos 4 y 5) es idéntica
+        if (productos.length === 0) {
+            if (searchTerm) {
+                productGrid.innerHTML = `<h2>No se encontraron resultados para "${searchTerm}"</h2>`;
+            } else {
+                productGrid.innerHTML = `<h2>No hay productos para mostrar.</h2>`;
+            }
+            return;
+        }
 
-        // --- 2. EL RESTO ES IGUAL ---
         productGrid.innerHTML = ''; 
         productos.forEach(producto => {
-            // ¡OJO! Asegúrate que los nombres de tus columnas
-            // (ej. producto.imagen_url) coincidan con el HTML
             const cardHTML = `
                 <div class="product-card">
                     <a href="producto.html?id=${producto.id}">
-                        <img src="${producto.imagen}" alt="${producto.nombre}"> 
+                        <img src="${producto.imagen}" alt="${producto.nombre}">
                     </a>
                     <a href="producto.html?id=${producto.id}" class="product-title-link">
                         <h3>${producto.nombre}</h3>
                     </a>
                     <p class="product-price">$${producto.precio.toLocaleString('es-CL')}</p>
-                    <button class...>...</button>
+                    <button class="add-to-cart-btn" data-id="${producto.id}">
+                        Añadir al Carrito
+                    </button>
                 </div>
             `;
             productGrid.innerHTML += cardHTML;
         });
     }
 
-    // --- INICIAMOS LA CARGA DE PRODUCTOS ---
-    cargarProductos(); // <--- Ya no necesita el mock
+    // --- 3. CARGA INICIAL ---
+    // Al cargar la página, usamos el término que vino de la URL
+    cargarProductos(urlSearchTerm); //
 });
