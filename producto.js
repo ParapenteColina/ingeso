@@ -46,6 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 container.innerHTML = productoHTML;
 
+                // --- ¡AQUÍ ESTÁ LA PARTE QUE FALTABA! ---
+                // 1. Encontrar el botón que ACABAMOS de crear
+                const btnAgregar = container.querySelector('.add-to-cart-btn');
+
+                // 2. Añadirle el "oyente" de clic
+                btnAgregar.addEventListener('click', () => {
+                    // 3. Llamar a la función GLOBAL (de main.js)
+                    agregarAlCarrito(productoEncontrado);
+                });
+                // --- FIN DE LAS LÍNEAS AÑADIDAS ---
+
             } else {
                 container.innerHTML = '<h1>Producto no encontrado</h1><p>El producto que buscas no existe.</p>';
             }

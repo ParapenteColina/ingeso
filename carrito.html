@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - FigurasPRO</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main class="carrito-page">
+        <h1>Mi Carrito de Compras</h1>
+        
+        <div class="carrito-layout">
+            
+            <div class="carrito-items">
+                
+                <div class="items-header">
+                    <div class="header-producto">Producto</div>
+                    <div class="header-cantidad">Cantidad</div>
+                    <div class="header-subtotal">Subtotal</div>
+                </div>
+
+                <div id="carrito-container">
+                    </div>
+            </div>
+
+            <div class="carrito-resumen">
+                <h3>Resumen de Compra</h3>
+                
+                <div class="resumen-descuento">
+                    <p>Si tienes un código de descuento ingrésalo aquí</p>
+                    </div>
+
+                <div class="resumen-total">
+                    <div class="total-linea">
+                        <span>Subtotal</span>
+                        <span id="subtotal-precio">$0</span>
+                    </div>
+                    <div class="total-linea">
+                        <span>Envío</span>
+                        <span>Gratis</span>
+                    </div>
+                    <div class="total-linea total-final">
+                        <span>TOTAL</span>
+                        <span id="total-precio">$0</span>
+                    </div>
+                </div>
+
+                <button class="btn-pagar-miembro">Comprar como miembro</button>
+                <button class="btn-pagar-invitado">Comprar como invitado</button>
+            </div>
+
+        </div>
+    </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <script src="main.js"></script> 
+    <script src="carrito.js"></script> 
+</body>
+</html>
