@@ -30,6 +30,9 @@ function cargarCarrito() {
         const subtotalProducto = producto.precio * producto.cantidad;
         subtotalGeneral += subtotalProducto;
 
+        // --- CAMBIO AQUÍ ---
+        // Añadimos 'max="${producto.stock}"' al input de cantidad.
+        // También guardamos el stock en un 'data-stock' para referencia.
         const productoHTML = `
             <div class="carrito-item" data-product-id="${producto.id}">
                 <div class="item-info">
@@ -44,7 +47,12 @@ function cargarCarrito() {
                 </div>
                 
                 <div class="item-cantidad">
-                    <input type="number" class="input-cantidad" value="${producto.cantidad}" min="1" data-id="${producto.id}">
+                    <input type="number" class="input-cantidad" 
+                           value="${producto.cantidad}" 
+                           min="1" 
+                           max="${producto.stock}" 
+                           data-id="${producto.id}" 
+                           data-stock="${producto.stock}">
                 </div>
                 
                 <div class="item-subtotal">
@@ -55,14 +63,14 @@ function cargarCarrito() {
         carritoContainer.innerHTML += productoHTML;
     });
 
-    // 3. Mostrar el total
     subtotalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
-    totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`; // (Asumiendo envío gratis)
+    totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
 
-    // 4. Añadir lógica a los botones de "Eliminar" y a los inputs de "Cantidad"
     agregarEventosEliminar();
     agregarEventosCantidad();
 }
+
+
 
 function agregarEventosEliminar() {
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
@@ -78,37 +86,54 @@ function agregarEventosEliminar() {
 function agregarEventosCantidad() {
     const inputsCantidad = document.querySelectorAll('.input-cantidad');
     inputsCantidad.forEach(input => {
-        input.addEventListener('input', (e) => { // 'input' se dispara en cada cambio
+        input.addEventListener('input', (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const nuevaCantidad = parseInt(e.currentTarget.value);
+            const stock = parseInt(e.currentTarget.getAttribute('data-stock'));
+            let nuevaCantidad = parseInt(e.currentTarget.value);
+
+            // --- VALIDACIÓN DE STOCK EN EL CARRITO ---
+            if (nuevaCantidad > stock) {
+                nuevaCantidad = stock; // Resetea al máximo
+                e.currentTarget.value = stock; // Corrige el valor en el input
+                
+                // Llama a la función global de main.js
+                if (typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion("Stock máximo alcanzado: " + stock, "error");
+                }
+            }
+            // --- FIN VALIDACIÓN ---
 
             if (nuevaCantidad >= 1) {
-                actualizarCantidadEnCarrito(id, nuevaCantidad);
+                actualizarCantidadEnCarrito(id, nuevaCantidad, stock);
             }
         });
     });
 }
 
 function eliminarDelCarrito(idProducto) {
+    // ... (Esta función no cambia)
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     carrito = carrito.filter(producto => producto.id != idProducto);
     localStorage.setItem('carrito', JSON.stringify(carrito));
     
-    // Volver a cargar la vista del carrito y el contador del header
     cargarCarrito(); 
-    actualizarContadorCarrito(); // (Esta función está en main.js)
+    if (typeof actualizarContadorCarrito === 'function') {
+        actualizarContadorCarrito();
+    }
 }
 
-function actualizarCantidadEnCarrito(idProducto, cantidad) {
+function actualizarCantidadEnCarrito(idProducto, cantidad, stock) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const productoEnCarrito = carrito.find(item => item.id == idProducto);
 
     if (productoEnCarrito) {
         productoEnCarrito.cantidad = cantidad;
+        productoEnCarrito.stock = stock; // Re-sincroniza el stock por si acaso
         localStorage.setItem('carrito', JSON.stringify(carrito));
         
-        // Volver a cargar la vista del carrito (para recalcular subtotales)
-        cargarCarrito();
-        actualizarContadorCarrito(); // (Esta función está en main.js)
+        cargarCarrito(); // Recarga todo para recalcular subtotales
+        if (typeof actualizarContadorCarrito === 'function') {
+            actualizarContadorCarrito();
+        }
     }
 }
