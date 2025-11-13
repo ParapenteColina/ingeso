@@ -956,3 +956,59 @@ main {
     color: #333;
     font-size: 14px;
 }
+
+.cart-notification {
+    /* ... (Tus estilos existentes: position, bottom, left, transform, etc.) ... */
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Más espacio para el ícono */
+    font-size: 1rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.cart-notification.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- NUEVAS CLASES --- */
+.cart-notification.success {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.cart-notification.error {
+    background-color: #D9534F; /* Rojo de error */
+    color: #ffffff;
+}
+/* --- FIN NUEVAS CLASES --- */
+
+
+#notification-icon {
+    font-size: 1.2rem;
+}
+
+.cart-notification.success #notification-icon {
+    color: #4CAF50; /* Verde */
+}
+
+.cart-notification.error #notification-icon {
+    color: #ffffff; /* Blanco */
+}
+
+
+.cart-notification .close-notification {
+    /* ... (Tus estilos para el botón de cerrar) ... */
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: auto; /* Empuja el botón a la derecha */
+}

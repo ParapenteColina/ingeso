@@ -88,7 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // --- FIN LÓGICA DE BÚSQUEDA ---
             
-            gestionarLinkAdmin(); 
+            gestionarLinkAdmin();
+
+            actualizarContadorCarrito();
         })
         .catch(error => console.error('Error al cargar el header:', error));
 
@@ -125,38 +127,50 @@ function gestionarLinkAdmin() {
 // Las ponemos aquí (fuera del DOMContentLoaded) para que sean "globales"
 // y se puedan llamar desde producto.js, inventario.js, etc.
 
+
+let notificationTimer; // Variable global para el timer de la notificación
+
 /**
- * 4. Función para AÑADIR un producto al carrito en localStorage
- * @param {object} producto - El objeto del producto que viene de Supabase
+ * Función para AÑADIR un producto al carrito (AHORA VALIDA EL STOCK)
+ * @param {object} producto - El objeto del producto que viene de Supabase (debe incluir .stock)
  */
 function agregarAlCarrito(producto) {
-    console.log("Añadiendo al carrito:", producto.nombre);
+    console.log("Añadiendo al carrito:", producto.nombre, "Stock:", producto.stock);
 
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const productoEnCarrito = carrito.find(item => item.id === producto.id);
+    
+    const stockDisponible = producto.stock;
 
     if (productoEnCarrito) {
-        // Si está, solo aumenta la cantidad
-        productoEnCarrito.cantidad++;
+        if (productoEnCarrito.cantidad < stockDisponible) {
+            productoEnCarrito.cantidad++;
+            productoEnCarrito.stock = stockDisponible; 
+            
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            mostrarNotificacion("¡Producto añadido!", "success");
+            actualizarContadorCarrito();
+        
+        } else {
+            mostrarNotificacion("No puedes agregar más, stock máximo alcanzado.", "error");
+        }
     } else {
-        // Si no está, lo añade con cantidad 1
-        carrito.push({
-            id: producto.id,
-            nombre: producto.nombre,
-            precio: producto.precio,
-            imagen: producto.imagen,
-            cantidad: 1
-        });
+        if (stockDisponible > 0) {
+            carrito.push({
+                id: producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                imagen: producto.imagen,
+                cantidad: 1,
+                stock: stockDisponible 
+            });
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            mostrarNotificacion("¡Producto añadido!", "success");
+            actualizarContadorCarrito();
+        } else {
+            mostrarNotificacion("Este producto está agotado.", "error");
+        }
     }
-
-    // Guardar el carrito actualizado
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    // Dar feedback al usuario
-    alert('¡Producto añadido al carrito!');
-    
-    // Actualizar el contador en el header INMEDIATAMENTE
-    actualizarContadorCarrito();
 }
 
 
@@ -165,24 +179,46 @@ function agregarAlCarrito(producto) {
  */
 function actualizarContadorCarrito() {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    const contadorEl = document.getElementById('carrito-contador'); // ID del <span>
+    const contadorEl = document.querySelector('.cart-counter'); 
 
     if (contadorEl) {
-        // Suma la 'cantidad' de cada producto en el carrito
         const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
-        
         contadorEl.textContent = totalItems;
         
-        // Opcional: mostrar/ocultar si es 0
         if (totalItems > 0) {
-            contadorEl.style.display = 'flex'; // O 'block'
+            contadorEl.style.display = 'flex';
         } else {
             contadorEl.style.display = 'none';
         }
+    }
+}
+function mostrarNotificacion(mensaje, tipo = "success") {
+    const notification = document.getElementById('cart-notification');
+    const iconEl = document.getElementById('notification-icon');
+    const messageEl = document.getElementById('notification-message');
 
-    } else {
-        // Esto puede pasar si el header aún no se carga, 
-        // pero main.js se asegura de llamarlo de nuevo después del fetch.
-        // console.log("El contador del carrito aún no está en el DOM.");
+    if (notification && iconEl && messageEl) {
+        // Limpiar timer anterior si existe
+        clearTimeout(notificationTimer);
+        
+        // Configurar mensaje e ícono
+        messageEl.textContent = mensaje;
+        if (tipo === "success") {
+            iconEl.innerHTML = '<i class="fa-solid fa-check"></i>';
+            notification.classList.remove('error');
+            notification.classList.add('success');
+        } else { // "error"
+            iconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            notification.classList.remove('success');
+            notification.classList.add('error');
+        }
+        
+        // Mostrar notificación
+        notification.classList.add('show');
+
+        // Ocultar automáticamente después de 3 segundos
+        notificationTimer = setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
     }
 }
