@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - FigurasPRO</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <main class="login-main">
+        <div class="login-container">
+            <div class="form-flipper">
+
+                <div class="form-side" id="form-login">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email"><i class="fa-solid fa-envelope"></i> Email:</label>
+                            <input type="email" id="login-email" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password"><i class="fa-solid fa-lock"></i> Contraseña:</label>
+                            <input type="password" id="login-password" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="submit-btn">Entrar</button>
+                    </form>
+                    <p class="form-toggle-text">
+                        ¿No tienes cuenta? <a href="#" id="show-register">Regístrate aquí</a>
+                    </p>
+                    <div id="login-feedback" class="feedback-message"></div>
+                </div>
+
+                <div class="form-side form-back" id="form-register">
+                    <h2>Crear Cuenta</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-name"><i class="fa-solid fa-user"></i> Nombre Completo:</label>
+                            <input type="text" id="register-name" required autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email"><i class="fa-solid fa-envelope"></i> Email:</label>
+                            <input type="email" id="register-email" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password"><i class="fa-solid fa-lock"></i> Contraseña:</label>
+                            <input type="password" id="register-password" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="submit-btn">Crear Cuenta</button>
+                    </form>
+                    <p class="form-toggle-text">
+                        ¿Ya tienes cuenta? <a href="#" id="show-login">Inicia sesión</a>
+                    </p>
+                    <div id="register-feedback" class="feedback-message"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script> <script src="js/login.js"></script> </body>
+</html>

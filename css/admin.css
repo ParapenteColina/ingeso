@@ -1,0 +1,385 @@
+/* --- Colores de FigurasPRO --- */
+:root {
+    --color-primary: #3f51b5; /* Azul oscuro principal (similar a tu header) */
+    --color-accent: #ffc107;  /* Amarillo/Naranja (si usas para resaltar) */
+    --color-light: #ffffff;
+    --color-dark: #1a1a1a;
+    --color-text: #333333;
+    --color-text-light: #666666;
+    --color-bg-light: #f4f7f6; /* Fondo general */
+    --color-border: #e0e0e0;
+}
+
+/* --- Estilos del Header (si lo copiaste de main.css, ajusta rutas) --- */
+.main-header {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-header .logo a {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--color-light);
+    text-decoration: none;
+}
+
+.main-header .main-nav a {
+    color: var(--color-light);
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.main-header .main-nav a:hover {
+    color: var(--color-accent);
+}
+
+
+/* --- Estilos Generales del Panel --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--color-bg-light);
+    margin: 0;
+    line-height: 1.6;
+    color: var(--color-text);
+}
+
+h1, h2 {
+    color: var(--color-dark);
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.admin-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 30px;
+    max-width: 1400px; /* Un poco más ancho para más espacio */
+    margin: 30px auto; /* Centra el dashboard */
+}
+
+.form-container, .table-container {
+    background-color: var(--color-light);
+    padding: 30px;
+    border-radius: 12px; /* Bordes más redondeados */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-container {
+    flex: 1; 
+    min-width: 350px; /* Un poco más pequeño si quieres */
+}
+
+.table-container {
+    flex: 2; 
+    min-width: 600px;
+    overflow-x: auto; 
+}
+
+/* --- Formulario de Añadir Producto --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="url"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    box-sizing: border-box; 
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2); /* Sombra de foco azul */
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group-row {
+    display: flex;
+    gap: 20px;
+}
+.form-group-row .form-group {
+    flex: 1; /* Ocupan el mismo espacio */
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--color-primary); /* Azul principal */
+    color: var(--color-light);
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #303f9f; /* Un azul un poco más oscuro al pasar el ratón */
+    transform: translateY(-2px);
+}
+
+/* --- Estilos de la Tabla --- */
+.product-table {
+    width: 100%;
+    border-collapse: separate; /* Para que border-spacing funcione */
+    border-spacing: 0 8px; /* Espacio entre filas */
+    margin-top: 20px;
+}
+
+.product-table thead th {
+    background-color: var(--color-bg-light); /* Fondo ligeramente gris para el encabezado */
+    padding: 15px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-dark);
+    border-bottom: 2px solid var(--color-border);
+    /* Quitar bordes si estás usando border-spacing */
+    border: none; 
+}
+
+.product-table tbody tr {
+    background-color: var(--color-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px; /* Bordes redondeados para cada fila */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-table tbody tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.product-table td {
+    padding: 15px 15px;
+    text-align: left;
+    color: var(--color-text);
+    border-bottom: none; /* Quitamos los bordes internos */
+}
+
+/* Redondea las esquinas de la primera y última celda de cada fila */
+.product-table tbody tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.product-table tbody tr td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+
+.product-table td img {
+    width: 60px; /* Un poco más grande */
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px; /* Más redondeado */
+    border: 1px solid var(--color-border);
+}
+
+.product-table .btn-edit, .product-table .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 8px;
+    margin: 0 3px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.product-table .btn-edit { 
+    color: var(--color-primary); 
+}
+.product-table .btn-edit:hover {
+    background-color: rgba(63, 81, 181, 0.1);
+    transform: scale(1.1);
+}
+.product-table .btn-delete { 
+    color: #dc3545; /* Rojo de Font Awesome */
+}
+.product-table .btn-delete:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    transform: scale(1.1);
+}
+
+/* --- Estilos para los mensajes de feedback --- */
+#feedback-message-add, #feedback-message-edit {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    display: block;
+    border: 1px solid transparent; /* Para que no se mueva al aparecer */
+}
+
+#feedback-message-add.success, #feedback-message-edit.success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+#feedback-message-add.error, #feedback-message-edit.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* --- Estilos del Modal (Ventana Emergente) --- */
+
+.modal-overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Más oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0; /* Empieza oculto */
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; 
+}
+
+/* Mostrar el modal */
+.modal-overlay:not(.hidden) { /* Usamos :not(.hidden) para cuando NO tiene la clase hidden */
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.modal-content {
+    background-color: var(--color-light);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 650px; /* Un poco más grande */
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    transform: translateY(-30px) scale(0.9); /* Empieza un poco arriba y más pequeño */
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Animación cuando el modal está visible */
+.modal-overlay:not(.hidden) .modal-content {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2.5rem; /* Más grande */
+    color: #999;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1; /* Para que la 'x' esté centrada */
+    transition: color 0.2s ease;
+}
+.modal-close:hover {
+    color: var(--color-dark);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.btn-cancel {
+    padding: 12px 20px;
+    background-color: #6c757d; /* Gris */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-cancel:hover {
+    background-color: #5a6268;
+}
+
+/* --- Responsive (para pantallas más pequeñas) --- */
+@media (max-width: 992px) {
+    .admin-dashboard {
+        flex-direction: column; /* Apila las columnas */
+        padding: 20px;
+    }
+    .form-container, .table-container {
+        min-width: unset; /* Quita el min-width */
+        width: 100%;
+    }
+    .main-header {
+        padding: 15px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .main-header .main-nav a {
+        margin: 0 10px;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    .form-group-row {
+        flex-direction: column;
+        gap: 0; /* Quita el gap en columnas */
+    }
+}

@@ -3,85 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - Action Figure Store</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Panel de Control - FigurasPRO</title>
+    <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-    <div id="header-placeholder"></div>
-
-    <div class="admin-wrapper">
-        <aside class="admin-sidebar">
-            <div class="sidebar-header">
-                <h3>Admin Panel</h3>
-            </div>
-            <ul class="sidebar-nav">
-                <li class="active"><a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
-                <li><a href="#"><i class="fa-solid fa-dollar-sign"></i> Ventas</a></li>
-                <li><a href="#"><i class="fa-solid fa-box-archive"></i> Productos</a></li>
-                <li><a href="#"><i class="fa-solid fa-users"></i> Cuentas</a></li>
-                <li><a href="#"><i class="fa-solid fa-database"></i> Datos</a></li>
-                <li><a href="#"><i class="fa-solid fa-key"></i> Claves API</a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Ajustes</a></li>
-            </ul>
-        </aside>
-
-        <main class="admin-content">
-            <h1>Dashboard de Métricas</h1>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fa-solid fa-sack-dollar"></i>
-                    <div class="stat-info">
-                        <h3>Ventas Totales</h3>
-                        <p>$1,485,990</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-truck-fast"></i>
-                    <div class="stat-info">
-                        <h3>Pedidos en Envío</h3>
-                        <p>12</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-wifi"></i>
-                    <div class="stat-info">
-                        <h3>Usuarios Online</h3>
-                        <p>7</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <div class="stat-info">
-                        <h3>Nuevos Clientes (Mes)</h3>
-                        <p>45</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h2>Estadísticas de Ventas (Últimos 6 meses)</h2>
-                <div class="chart">
-                    <div class="chart-bar" style="height: 60%;"><span>Mayo</span></div>
-                    <div class="chart-bar" style="height: 75%;"><span>Junio</span></div>
-                    <div class="chart-bar" style="height: 50%;"><span>Julio</span></div>
-                    <div class="chart-bar" style="height: 85%;"><span>Agosto</span></div>
-                    <div class="chart-bar" style="height: 95%;"><span>Septiembre</span></div>
-                    <div class="chart-bar" style="height: 70%;"><span>Octubre</span></div>
-                </div>
-            </div>
-        </main>
+    <header class="main-header">
+    <div class="logo">
+        <a href="index.html">FIGURASPRO</a>
     </div>
+    <nav class="main-nav">
+        <a href="admin.html">Panel de Control</a>
+    </nav>
+    <div class="header-actions">
+        </div>
+</header>
 
-    <div id="footer-placeholder"></div>
+    <main class="admin-dashboard">
 
+        <section class="form-container">
+            <h2>Añadir Nuevo Producto</h2>
+            <form id="form-nuevo-producto">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" rows="4" required></textarea>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="precio">Precio (CLP):</label>
+                        <input type="number" id="precio" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Stock:</label>
+                        <input type="number" id="stock" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="imagen">URL de la Imagen:</label>
+                    <input type="url" id="imagen" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fa-solid fa-plus"></i> Añadir Producto
+                </button>
+                <div id="feedback-message-add"></div>
+            </form>
+        </section>
+
+        <section class="table-container">
+            <h2>Gestionar Productos</h2>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-productos-body">
+                    </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <div id="modal-editar-overlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Editar Producto</h2>
+            <form id="form-editar-producto">
+                <input type="hidden" id="edit-id">
+                
+                <div class="form-group">
+                    <label for="edit-nombre">Nombre:</label>
+                    <input type="text" id="edit-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-descripcion">Descripción:</label>
+                    <textarea id="edit-descripcion" rows="4" required></textarea>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="edit-precio">Precio (CLP):</label>
+                        <input type="number" id="edit-precio" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-stock">Stock:</label>
+                        <input type="number" id="edit-stock" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-imagen">URL de la Imagen:</label>
+                    <input type="url" id="edit-imagen" required>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="btn-cancelar-edicion">Cancelar</button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+                <div id="feedback-message-edit"></div>
+            </form>
+            <button class="modal-close" id="btn-cerrar-modal-x">&times;</button>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-client.js"></script>
-
-    <script src="main.js"></script> </body>
-
-
+    <script src="js/supabase-client.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 </html>
