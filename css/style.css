@@ -958,23 +958,30 @@ main {
 }
 
 .cart-notification {
-    /* ... (Tus estilos existentes: position, bottom, left, transform, etc.) ... */
+    
+    position: fixed;   
+    bottom: 20px;     
+    right: 20px;       
+    width: auto;       
+    max-width: 350px;  
     padding: 15px 25px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
-    gap: 15px; /* Más espacio para el ícono */
+    gap: 15px; 
     font-size: 1rem;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease-in-out;
+    transform: translateX(100px); 
+    transition: all 0.4s ease-in-out; 
 }
 
 .cart-notification.show {
     opacity: 1;
     visibility: visible;
+    transform: translateX(0);
 }
 
 /* --- NUEVAS CLASES --- */
@@ -1011,4 +1018,109 @@ main {
     font-size: 1.5rem;
     cursor: pointer;
     margin-left: auto; /* Empuja el botón a la derecha */
+}
+/* ================================================== */
+/* ESTILOS PARA EL MENÚ DE USUARIO DEL HEADER
+/* (Pega esto al final de tu css/style.css)
+/* ================================================== */
+
+.user-options {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espacio entre el carrito y el icono de usuario */
+}
+
+/* --- Contenedor del Menú --- */
+.user-menu-container {
+    position: relative; /* Para que el dropdown se posicione respecto a esto */
+}
+
+/* --- Botón (Icono) --- */
+.user-icon-btn {
+    background: none;
+    border: none;
+    color: white; /* Color del icono (asumiendo header azul) */
+    font-size: 1.5rem; /* Tamaño del icono */
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.user-icon-btn:hover {
+    color: #ffc107; /* Color de acento al pasar el ratón (amarillo) */
+}
+
+/* --- El Menú Desplegable --- */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 15px); /* Posiciona el menú 15px debajo del botón */
+    right: 0; /* Alineado a la derecha */
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Para que los bordes redondeados se apliquen bien */
+    min-width: 200px;
+    z-index: 1000; /* Asegura que esté encima de otros elementos */
+
+    /* Animación de aparición */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease-out;
+}
+
+/* Clase 'show' que añade/quita el JS */
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* --- Opciones del Menú --- */
+.user-dropdown .dropdown-item {
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #333; /* Color del texto del menú */
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+    white-space: nowrap; /* Evita que el texto se rompa */
+}
+
+.user-dropdown .dropdown-item:hover {
+    background-color: #f4f7f6; /* Fondo suave al pasar el ratón */
+}
+
+/* Estilo para el botón "Cerrar Sesión" */
+.user-dropdown button.dropdown-item {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit; /* Hereda la fuente */
+    color: #333; /* Hereda el color del texto */
+}
+
+/* Clase para ocultar elementos con JS */
+.hidden {
+    display: none !important;
+}
+.user-name-display {
+    color: white; /* Texto blanco (para el header azul) */
+    font-weight: 600;
+    font-size: 1rem;
+    display: none; /* Oculto por defecto */
+}
+
+/* Clase que se añade con JS cuando el usuario inicia sesión */
+.user-name-display.show {
+    display: block; /* Lo hace visible */
+}
+
+/* Ajuste para el contenedor de menú (para alinear nombre e icono) */
+.user-menu-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Separa el nombre del icono si estuvieran juntos */
 }
