@@ -1,6 +1,7 @@
 // main.js (Versión final con Nombre de Usuario en Header)
 
 document.addEventListener('DOMContentLoaded', () => {
+    cargarOfertas();
 
     // Carga el Header
     fetch('components/header.html')
@@ -305,6 +306,104 @@ function actualizarContadorCarrito() {
         }
     }
 }
+
+
+// AGREGAR o REEMPLAZAR esta función en js/main.js
+
+async function cargarOfertas() {
+    const ofertasGrid = document.getElementById('ofertas-grid');
+    // Salir si no estamos en la página principal o si el contenedor no existe.
+    if (!ofertasGrid) return; 
+
+    try {
+        ofertasGrid.innerHTML = '<p>Cargando las mejores ofertas...</p>';
+        
+        // 1. Consulta: Traer solo productos activos con un descuento mayor a 0.
+        const { data: productosOferta, error } = await supabase
+            .from('productos')
+            .select('*')
+            .eq('activo', true)
+            .gt('descuento', 0) // Usamos gt (greater than) para descuento > 0
+            .limit(4); // Limitar a las 4 mejores ofertas, por ejemplo
+
+       if (error) {
+    // Si hay un error de conexión o consulta
+    console.error('Error al cargar ofertas:', error.message);
+    ofertasGrid.innerHTML = '<p class="error-ofertas">Error al conectar con la base de datos de ofertas.</p>';
+    return;
+}
+
+        if (productosOferta.length === 0) {
+    // Si la base de datos no devuelve productos con descuento
+    ofertasGrid.innerHTML = '<p class="info-ofertas">😔 Lo sentimos, no hay ofertas disponibles por ahora.</p>';
+    return;
+}
+
+        let ofertasHTML = '';
+        
+        // 2. Renderizado de productos con cálculo de precio de oferta
+        productosOferta.forEach(producto => {
+            // **CÁLCULO DEL PRECIO DE OFERTA**
+            const precioOriginal = producto.precio;
+            const porcentajeDescuento = producto.descuento;
+            const precioFinal = precioOriginal * (1 - porcentajeDescuento / 100);
+
+            const precioDisplay = `
+                <span class="old-price">$${precioOriginal.toLocaleString('es-CL')}</span> 
+                <span class="offer-price-main">$${precioFinal.toLocaleString('es-CL')}</span>
+            `;
+
+            ofertasHTML += `
+                <div class="product-card">
+                    <a href="producto.html?id=${producto.id}">
+                        <img src="${producto.imagen}" alt="${producto.nombre}">
+                    </a>
+                    <a href="producto.html?id=${producto.id}" class="product-title-link">
+                        <h3>${producto.nombre}</h3>
+                    </a>
+                    <p class="product-price">${precioDisplay}</p>
+                    <button class="add-to-cart-btn" data-id="${producto.id}">
+                        Añadir al Carrito
+                    </button>
+                </div>
+            `;
+        });
+
+        ofertasGrid.innerHTML = ofertasHTML;
+        
+        // 3. Adjuntar Eventos al Carrito (Similar a como se hace en producto.js)
+        ofertasGrid.querySelectorAll('.add-to-cart-btn').forEach(boton => {
+            const id = boton.getAttribute('data-id');
+            // Encuentra el objeto producto completo en el array de la consulta
+            const productoSeleccionado = productosOferta.find(p => p.id == id);
+            
+            if (productoSeleccionado) {
+                // Preparamos el objeto a añadir al carrito con el PRECIO DE OFERTA calculado
+                const productoConPrecioFinal = {
+                    ...productoSeleccionado,
+                    precio: productoSeleccionado.precio * (1 - productoSeleccionado.descuento / 100)
+                };
+                
+                boton.addEventListener('click', () => {
+                    if (typeof agregarAlCarrito === 'function') {
+                        // Pasamos el objeto con el precio de oferta actualizado
+                        agregarAlCarrito(productoConPrecioFinal); 
+                    }
+                });
+            }
+        });
+
+
+    } catch (error) {
+        console.error('Error al cargar ofertas:', error.message);
+        ofertasGrid.innerHTML = '<p>Error al cargar las ofertas.</p>';
+    }
+}
+
+
+// Asegúrate de llamar a esta función al final de tu main.js
+// Ejemplo: document.addEventListener('DOMContentLoaded', () => { ... cargarOfertas(); });
+
 
 function mostrarNotificacion(mensaje, tipo = "success") {
     const notification = document.getElementById('cart-notification');

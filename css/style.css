@@ -1124,3 +1124,64 @@ main {
     align-items: center;
     gap: 10px; /* Separa el nombre del icono si estuvieran juntos */
 }
+
+/* =========================================
+   ESTILOS DE OFERTAS Y PRECIOS
+   ========================================= */
+
+/* Contenedor de precios (para alinearlos bien) */
+.product-card p.product-price {
+    display: flex;
+    justify-content: center; /* Centrado horizontalmente */
+    align-items: center;
+    gap: 10px; /* Espacio entre el precio viejo y el nuevo */
+    margin: 10px 0;
+}
+
+/* 1. PRECIO ANTIGUO (Tachado) */
+.old-price, 
+.old-price-catalog {
+    text-decoration: line-through; /* Esto hace la línea en medio */
+    color: #999; /* Color gris suave para que destaque menos */
+    font-size: 0.9rem; /* Un poco más pequeño */
+    font-weight: normal;
+}
+
+/* 2. PRECIO NUEVO (Oferta) */
+.offer-price-main, 
+.product-price-catalog {
+    color: #e74c3c; /* Rojo vibrante (o usa #27ae60 para verde) */
+    font-weight: 800; /* Muy negrita */
+    font-size: 1.2rem; /* Más grande para resaltar */
+}
+
+/* 3. MEJORA VISUAL DE LA TARJETA (Opcional) */
+.product-card {
+    border: 1px solid #eee;
+    border-radius: 10px; /* Bordes redondeados */
+    padding-bottom: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+}
+
+/* Efecto al pasar el mouse por encima de la tarjeta */
+.product-card:hover {
+    transform: translateY(-5px); /* Se levanta un poco */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Sombra suave */
+}
+
+/* 4. BOTÓN DE AÑADIR AL CARRITO */
+.add-to-cart-btn {
+    background-color: #111;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #e74c3c; /* Cambia a rojo al pasar el mouse */
+}

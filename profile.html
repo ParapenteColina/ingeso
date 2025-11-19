@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - FigurasPRO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Estilos simples para el perfil */
+        .profile-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .profile-header { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .profile-field { margin-bottom: 15px; }
+        .profile-label { font-weight: bold; color: #555; display: block; margin-bottom: 5px; }
+        .profile-value { font-size: 1.1rem; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1><i class="fa-solid fa-id-card"></i> Mi Perfil</h1>
+            </div>
+
+            <div class="profile-info" id="profile-content">
+                <p>Cargando información...</p>
+            </div>
+            
+            <button onclick="window.location.href='index.html'" class="btn-more-info" style="margin-top: 20px;">
+                Volver al Inicio
+            </button>
+        </div>
+    </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const profileContent = document.getElementById('profile-content');
+            
+            // Verificar sesión
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Obtener datos adicionales de la tabla clientes
+            const { data: cliente, error } = await supabase
+                .from('clientes')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            const nombre = cliente ? cliente.nombre_completo : 'Usuario';
+            const email = user.email;
+            const rol = (cliente && cliente.es_admin) ? 'Administrador' : 'Cliente';
+
+            profileContent.innerHTML = `
+                <div class="profile-field">
+                    <span class="profile-label">Nombre:</span>
+                    <div class="profile-value">${nombre}</div>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-label">Email:</span>
+                    <div class="profile-value">${email}</div>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-label">Tipo de Cuenta:</span>
+                    <div class="profile-value"><span class="badge">${rol}</span></div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

@@ -1,23 +1,34 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
+    // =========================================================
+    // 🔒 1. VERIFICACIÓN DE SEGURIDAD (ADMIN)
+    // =========================================================
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        // Si no está logueado, mandar al login
+        window.location.href = 'login.html'; 
+        return;
+    }
+
+    // Verificar si es admin en la tabla 'clientes'
+    const { data: cliente } = await supabase
+        .from('clientes')
+        .select('es_admin')
+        .eq('id', user.id)
+        .single();
+
+    if (!cliente || !cliente.es_admin) {
+        // Si no es admin, mandar al inicio
+        alert("Acceso denegado: No tienes permisos de administrador.");
+        window.location.href = 'index.html';
+        return;
+    }
+    // =========================================================
 
     // --- Referencias a elementos del DOM ---
     const formNuevoProducto = document.getElementById('form-nuevo-producto');
-    const feedbackMessageAdd = document.getElementById('feedback-message-add');
-    const listaProductosBody = document.getElementById('lista-productos-body');
-
-    // Referencias al MODAL de EDICIÓN
-    const modalOverlay = document.getElementById('modal-editar-overlay');
-    const modalForm = document.getElementById('form-editar-producto');
-    const btnCancelarEdicion = document.getElementById('btn-cancelar-edicion');
-    const btnCerrarModalX = document.getElementById('btn-cerrar-modal-x');
-    const feedbackMessageEdit = document.getElementById('feedback-message-edit');
-
-    // --- Almacén temporal de productos (para no pedirlos a Supabase a cada rato) ---
-    let productosCache = [];
-
-    // ===============================================
-    // 1. Cargar y Mostrar Productos en la Tabla
-    // ===============================================
+    // ... (resto de tus variables const) ...
     async function cargarProductos() {
         try {
             const { data, error } = await supabase
@@ -76,7 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
             descripcion: document.getElementById('descripcion').value,
             precio: parseFloat(document.getElementById('precio').value),
             stock: parseInt(document.getElementById('stock').value),
-            imagen: document.getElementById('imagen').value
+            imagen: document.getElementById('imagen').value,
+            // NUEVO:
+            descuento: parseInt(document.getElementById('descuento').value) || 0,
+            activo: true // Aseguramos que se cree activo por defecto
         };
 
         try {
@@ -146,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('edit-stock').value = producto.stock;
         document.getElementById('edit-imagen').value = producto.imagen;
 
+        document.getElementById('edit-descuento').value = producto.descuento || 0;
         // Mostrar el modal
         modalOverlay.classList.remove('hidden');
     }
@@ -177,6 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
             descripcion: document.getElementById('edit-descripcion').value,
             precio: parseFloat(document.getElementById('edit-precio').value),
             stock: parseInt(document.getElementById('edit-stock').value),
+            imagen: document.getElementById('edit-imagen').value,
+
+            descuento: parseInt(document.getElementById('edit-descuento').value) || 0,
             imagen: document.getElementById('edit-imagen').value
         };
 
@@ -202,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    
     // ===============================================
     // 5. Función de Utilidad (para mostrar mensajes)
     // ===============================================

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas - FigurasPRO</title>
+    <link rel="stylesheet" href="css/admin.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* Estilos específicos para el Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-info h3 { color: #777; font-size: 0.9rem; margin-bottom: 5px; }
+        .stat-info p { font-size: 1.8rem; font-weight: bold; color: #333; margin: 0; }
+        .stat-icon {
+            background: #f0f2f5;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .icon-money { color: #27ae60; background: #eafaf1; }
+        .icon-cart { color: #3498db; background: #ebf5fb; }
+        .icon-users { color: #f39c12; background: #fef5e7; }
+        
+        .low-stock-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stock-alert { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo"><a href="index.html">FIGURASPRO</a></div>
+        <nav class="main-nav">
+            <a href="admin.html">Gestionar Productos</a>
+            <a href="stats.html" class="active">Estadísticas</a>
+        </nav>
+    </header>
+
+    <main class="admin-dashboard">
+        <h1>Resumen del Negocio</h1>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Ventas Totales</h3>
+                    <p id="total-ventas">$0</p>
+                </div>
+                <div class="stat-icon icon-money"><i class="fa-solid fa-sack-dollar"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Pedidos Realizados</h3>
+                    <p id="total-pedidos">0</p>
+                </div>
+                <div class="stat-icon icon-cart"><i class="fa-solid fa-bag-shopping"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Clientes Registrados</h3>
+                    <p id="total-clientes">0</p>
+                </div>
+                <div class="stat-icon icon-users"><i class="fa-solid fa-users"></i></div>
+            </div>
+        </section>
+
+        <section class="low-stock-container">
+            <h2>⚠️ Alerta: Productos con Stock Bajo (Menos de 5)</h2>
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock Actual</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="low-stock-body">
+                    </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/stats.js"></script>
+</body>
+</html>
