@@ -1,10 +1,11 @@
 // Archivo: js/carrito.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("Cargando carrito.js...");
     cargarCarrito();
-    inicializarBotonCompra();
+    inicializarEventosCompra();
 });
+
+// --- LÓGICA DE INTERFAZ ---
 
 function cargarCarrito() {
     const carritoContainer = document.getElementById('carrito-container');
@@ -13,16 +14,15 @@ function cargarCarrito() {
     
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-    // Limpiar contenedor
-    if (carritoContainer) carritoContainer.innerHTML = ''; 
-
-    // Validar elementos del DOM
     if (!carritoContainer) return;
+    carritoContainer.innerHTML = ''; 
 
     if (carrito.length === 0) {
         carritoContainer.innerHTML = "<p class='carrito-vacio'>Tu carrito está vacío.</p>";
         if(subtotalPrecioEl) subtotalPrecioEl.textContent = "$0";
         if(totalPrecioEl) totalPrecioEl.textContent = "$0";
+        const btn = document.getElementById('btn-comprar-final');
+        if(btn) { btn.disabled = true; btn.style.opacity = "0.5"; }
         return;
     }
 
@@ -44,16 +44,12 @@ function cargarCarrito() {
                         </button>
                     </div>
                 </div>
-                
                 <div class="item-cantidad">
                     <input type="number" class="input-cantidad" 
-                           value="${producto.cantidad}" 
-                           min="1" 
-                           max="${producto.stock}" 
-                           data-id="${producto.id}" 
-                           data-stock="${producto.stock}">
+                           value="${producto.cantidad}" min="1" max="${producto.stock}" 
+                           data-id="${producto.id}" data-stock="${producto.stock}">
+                    <span class="stock-info">Disp: ${producto.stock}</span>
                 </div>
-                
                 <div class="item-subtotal">
                     $${subtotalProducto.toLocaleString('es-CL')}
                 </div>
@@ -64,191 +60,183 @@ function cargarCarrito() {
 
     if(subtotalPrecioEl) subtotalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
     if(totalPrecioEl) totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
+    
+    const btn = document.getElementById('btn-comprar-final');
+    if(btn) { btn.disabled = false; btn.style.opacity = "1"; }
 
     agregarEventosEliminar();
     agregarEventosCantidad();
 }
 
 function agregarEventosEliminar() {
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-    botonesEliminar.forEach(boton => {
+    document.querySelectorAll('.btn-eliminar').forEach(boton => {
         boton.addEventListener('click', (e) => {
-            const id = e.currentTarget.getAttribute('data-id');
-            eliminarDelCarrito(id);
+            eliminarDelCarrito(e.currentTarget.getAttribute('data-id'));
         });
     });
 }
 
 function agregarEventosCantidad() {
-    const inputsCantidad = document.querySelectorAll('.input-cantidad');
-    inputsCantidad.forEach(input => {
+    document.querySelectorAll('.input-cantidad').forEach(input => {
         input.addEventListener('input', (e) => {
             const id = e.currentTarget.getAttribute('data-id');
-            const stock = parseInt(e.currentTarget.getAttribute('data-stock'));
-            let nuevaCantidad = parseInt(e.currentTarget.value);
+            const stockMax = parseInt(e.currentTarget.getAttribute('data-stock'));
+            let val = parseInt(e.currentTarget.value);
 
-            if (nuevaCantidad > stock) {
-                nuevaCantidad = stock;
-                e.currentTarget.value = stock;
-                if(typeof mostrarNotificacion === 'function') {
-                    mostrarNotificacion(`Stock máximo alcanzado: ${stock}`, 'error');
-                } else {
-                    alert(`Stock máximo: ${stock}`);
-                }
+            // --- CAMBIO: Alerta bonita (Toast) en vez de alert() ---
+            if (val > stockMax) {
+                val = stockMax;
+                e.currentTarget.value = stockMax;
+                mostrarToast(`¡Ups! Solo quedan ${stockMax} unidades disponibles.`, 'error');
             }
-
-            if (nuevaCantidad >= 1) {
-                actualizarCantidadEnCarrito(id, nuevaCantidad, stock);
-            }
+            if (val < 1) val = 1;
+            
+            actualizarCantidadEnCarrito(id, val, stockMax);
         });
     });
 }
 
-function eliminarDelCarrito(idProducto) {
+function eliminarDelCarrito(id) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    carrito = carrito.filter(producto => producto.id != idProducto);
+    carrito = carrito.filter(p => p.id != id);
     localStorage.setItem('carrito', JSON.stringify(carrito));
-    cargarCarrito(); 
+    cargarCarrito();
     if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
 }
 
-function actualizarCantidadEnCarrito(idProducto, cantidad, stock) {
+function actualizarCantidadEnCarrito(id, cant, stock) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    const productoEnCarrito = carrito.find(item => item.id == idProducto);
-    if (productoEnCarrito) {
-        productoEnCarrito.cantidad = cantidad;
-        productoEnCarrito.stock = stock;
+    const p = carrito.find(i => i.id == id);
+    if (p) {
+        p.cantidad = cant;
         localStorage.setItem('carrito', JSON.stringify(carrito));
         cargarCarrito();
-        if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
     }
 }
 
 // =========================================================
-// 💰 LÓGICA DE CHECKOUT (CORREGIDA Y UNIFICADA)
+// 💰 LÓGICA DE COMPRA CON MODALES
 // =========================================================
 
-function inicializarBotonCompra() {
-    // Buscamos el botón por ID, es más seguro
+function inicializarEventosCompra() {
     const btnComprar = document.getElementById('btn-comprar-final');
-    
+    const btnConfirmar = document.getElementById('btn-confirmar-compra');
+    const btnCancelar = document.getElementById('btn-cancelar-dir');
+
+    // 1. Botón principal: Abre el modal de dirección
     if (btnComprar) {
-        console.log("Botón de compra encontrado y activado.");
-        
         btnComprar.addEventListener('click', async () => {
-            console.log("Click en comprar realizado.");
-            await procesarCompraUnica();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                mostrarToast("Debes iniciar sesión para comprar.", "error");
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+            // Abrir Modal Dirección
+            document.getElementById('modal-direccion').classList.add('active');
         });
-    } else {
-        console.error("ERROR: No se encontró el botón con id 'btn-comprar-final'");
+    }
+
+    // 2. Botón Confirmar en el Modal: Ejecuta la compra real
+    if (btnConfirmar) {
+        btnConfirmar.addEventListener('click', () => {
+            const direccion = document.getElementById('input-direccion-texto').value;
+            if (!direccion.trim()) {
+                mostrarToast("Por favor ingresa una dirección.", "error");
+                return;
+            }
+            procesarTransaccionFinal(direccion);
+        });
+    }
+
+    // 3. Botón Cancelar
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', () => {
+            document.getElementById('modal-direccion').classList.remove('active');
+        });
     }
 }
 
-async function procesarCompraUnica() {
-    const btn = document.getElementById('btn-comprar-final');
-    
-    // 1. Validar Carrito Vacío
+async function procesarTransaccionFinal(direccion) {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    if (carrito.length === 0) {
-        mostrarNotificacion("Tu carrito está vacío.", "error");
-        return;
-    }
-
-    // 2. Validar Usuario Logueado (Supabase)
-    // Si no está logueado, lo mandamos al login
-    const { data: { user } } = await supabase.auth.getUser();
+    const btnConfirmar = document.getElementById('btn-confirmar-compra');
     
-    if (!user) {
-        mostrarNotificacion("Debes iniciar sesión para completar la compra.", "error");
-        // Esperamos 2 segundos y redirigimos al login
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 2000);
-        return;
-    }
-
-    // 3. Pedir Dirección
-    const direccion = prompt("Por favor, ingresa tu dirección de envío:", "Calle Falsa 123, Santiago");
-    if (!direccion) return; // Usuario canceló el prompt
-
-    // --- INICIO PROCESO DE PAGO ---
     try {
-        // Deshabilitar botón para evitar doble compra
-        if(btn) {
-            btn.textContent = "Procesando...";
-            btn.disabled = true;
-        }
+        btnConfirmar.textContent = "Procesando...";
+        btnConfirmar.disabled = true;
+        
+        const { data: { user } } = await supabase.auth.getUser();
 
-        const totalCompra = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-
-        // A. Insertar en tabla 'pedidos'
-        const { data: ordenData, error: ordenError } = await supabase
+        // A. Crear Orden
+        const total = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+        const { data: orden, error: errOrden } = await supabase
             .from('pedidos')
             .insert({
                 cliente_id: user.id,
                 fecha_pedido: new Date().toISOString(),
                 estado: 'Completado',
-                total: totalCompra,
+                total: total,
                 direccion_envio: direccion
             })
-            .select()
-            .single();
+            .select().single();
 
-        if (ordenError) throw ordenError;
-        const pedidoId = ordenData.id;
+        if (errOrden) throw errOrden;
 
-        // B. Insertar detalles en 'pedido_items'
-        const itemsParaInsertar = carrito.map(item => ({
-            pedido_id: pedidoId,
-            producto_id: item.id,
-            cantidad: item.cantidad,
-            precio_al_comprar: item.precio
+        // B. Insertar Items
+        const itemsInsert = carrito.map(i => ({
+            pedido_id: orden.id, producto_id: i.id,
+            cantidad: i.cantidad, precio_al_comprar: i.precio
         }));
+        const { error: errItems } = await supabase.from('pedido_items').insert(itemsInsert);
+        if (errItems) throw errItems;
 
-        const { error: itemsError } = await supabase
-            .from('pedido_items')
-            .insert(itemsParaInsertar);
-
-        if (itemsError) throw itemsError;
-
-        // C. Descontar Stock en 'productos'
+        // C. Descontar Stock
         for (const item of carrito) {
-            const nuevoStock = item.stock - item.cantidad;
-            if (nuevoStock >= 0) {
-                await supabase
-                    .from('productos')
-                    .update({ stock: nuevoStock })
-                    .eq('id', item.id);
-            }
+            const nuevoStock = Math.max(0, item.stock - item.cantidad);
+            await supabase.from('productos').update({ stock: nuevoStock }).eq('id', item.id);
         }
 
-        // D. Finalización Exitosa
-        if(typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion(`¡Compra exitosa! Pedido #${pedidoId} creado.`, "success");
-        } else {
-            alert("Compra exitosa");
-        }
-        
+        // D. Finalizar: Cerrar Modal Dirección y Abrir Modal Éxito
+        document.getElementById('modal-direccion').classList.remove('active');
+        mostrarModalExito(orden.id);
+
         localStorage.removeItem('carrito');
         if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
 
-        // Redirigir a órdenes
-        setTimeout(() => {
-            window.location.href = 'orders.html';
-        }, 2000);
-
     } catch (error) {
-        console.error("Error CRÍTICO en la compra:", error);
-        if(typeof mostrarNotificacion === 'function') {
-            mostrarNotificacion("Hubo un error al procesar el pedido.", "error");
-        } else {
-            alert("Error al procesar el pedido.");
-        }
-        
-        // Reactivar botón si falló
-        if(btn) {
-            btn.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> Comprar Ahora';
-            btn.disabled = false;
-        }
+        console.error(error);
+        mostrarToast("Error al procesar la compra.", "error");
+        btnConfirmar.textContent = "Confirmar Compra";
+        btnConfirmar.disabled = false;
     }
+}
+
+function mostrarModalExito(orderId) {
+    const modal = document.getElementById('modal-exito');
+    const orderText = document.getElementById('modal-order-id');
+    const btnContinuar = document.getElementById('btn-modal-continuar');
+
+    if(modal) {
+        orderText.textContent = `Orden #${orderId}`;
+        modal.classList.add('active');
+        btnContinuar.onclick = () => window.location.href = 'orders.html';
+    }
+}
+
+// --- FUNCIÓN PARA NOTIFICACIONES BONITAS (TOAST) ---
+function mostrarToast(mensaje, tipo = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${tipo}`;
+    
+    const icon = tipo === 'error' ? '<i class="fa-solid fa-circle-exclamation"></i>' : '<i class="fa-solid fa-info-circle"></i>';
+    
+    toast.innerHTML = `${icon} <span>${mensaje}</span>`;
+    container.appendChild(toast);
+
+    // Desaparecer a los 3 segundos
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
