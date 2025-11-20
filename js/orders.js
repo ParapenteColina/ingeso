@@ -7,45 +7,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function cargarOrdenes() {
     const ordersListBody = document.getElementById('orders-list-body');
     
-    // 1. Verificar usuario
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-        ordersListBody.innerHTML = `
-            <tr><td colspan="5" style="text-align:center;">Debes iniciar sesión para ver tus órdenes.</td></tr>`;
+        ordersListBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Inicia sesión para ver tus órdenes.</td></tr>`;
         return;
     }
 
-    // 2. Obtener Pedidos de Supabase
+    // Traer pedidos
     const { data: pedidos, error } = await supabase
         .from('pedidos')
         .select('*')
         .eq('cliente_id', user.id)
-        .order('fecha_pedido', { ascending: false }); // Más recientes primero
+        .order('fecha_pedido', { ascending: false });
 
-    if (error) {
-        console.error('Error al cargar pedidos:', error);
-        ordersListBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error al cargar las órdenes.</td></tr>`;
+    if (error || !pedidos || pedidos.length === 0) {
+        ordersListBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay órdenes registradas.</td></tr>`;
         return;
     }
 
-    if (!pedidos || pedidos.length === 0) {
-        ordersListBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No tienes órdenes registradas aún.</td></tr>`;
-        return;
-    }
-
-    // 3. Renderizar Tabla
     ordersListBody.innerHTML = '';
     
     pedidos.forEach(pedido => {
-        // Formatear fecha
-        const fecha = new Date(pedido.fecha_pedido).toLocaleDateString('es-CL', {
-            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
-
-        // Determinar clase de estado
-        let estadoClass = 'status-pending'; // por defecto
-        if (pedido.estado === 'Completado') estadoClass = 'status-completed';
+        const fecha = new Date(pedido.fecha_pedido).toLocaleDateString('es-CL');
+        let estadoClass = pedido.estado === 'Completado' ? 'status-completed' : 'status-pending';
 
         const fila = `
             <tr>
@@ -54,7 +39,7 @@ async function cargarOrdenes() {
                 <td>$${pedido.total.toLocaleString('es-CL')}</td>
                 <td><span class="status-badge ${estadoClass}">${pedido.estado}</span></td>
                 <td>
-                     <button onclick="alert('Detalles del pedido #${pedido.id}')" style="cursor:pointer; background:none; border:none; color:#007bff;">
+                    <button onclick="abrirModalDetalles(${pedido.id})" style="cursor:pointer; background:none; border:1px solid #007bff; color:#007bff; padding: 5px 10px; border-radius:4px;">
                         <i class="fa-regular fa-eye"></i> Ver
                     </button>
                 </td>
@@ -63,3 +48,73 @@ async function cargarOrdenes() {
         ordersListBody.innerHTML += fila;
     });
 }
+
+// --- LÓGICA DEL MODAL DE DETALLES ---
+
+// Esta función se llama desde el HTML generado arriba
+window.abrirModalDetalles = async (pedidoId) => {
+    const modal = document.getElementById('modal-order-details');
+    const listContainer = document.getElementById('detail-items-list');
+    const addressEl = document.getElementById('detail-address');
+    const totalEl = document.getElementById('detail-total-price');
+    const idEl = document.getElementById('detail-id');
+
+    // 1. Mostrar modal cargando
+    modal.classList.add('active');
+    addressEl.textContent = "Cargando datos...";
+    listContainer.innerHTML = "<p style='padding:10px; text-align:center'>Cargando productos...</p>";
+
+    try {
+        // 2. Obtener Info del Pedido (para la dirección)
+        const { data: pedido } = await supabase
+            .from('pedidos')
+            .select('direccion_envio, total')
+            .eq('id', pedidoId)
+            .single();
+
+        // 3. Obtener los Items + Info del Producto (nombre, imagen)
+        // Nota: Esto requiere que tengas la relación (Foreign Key) bien hecha en Supabase.
+        // Si falla, usaremos un método alternativo abajo.
+        const { data: items, error } = await supabase
+            .from('pedido_items')
+            .select(`
+                cantidad,
+                precio_al_comprar,
+                productos ( nombre, imagen )
+            `)
+            .eq('pedido_id', pedidoId);
+
+        if(error) throw error;
+
+        // 4. Llenar datos
+        idEl.textContent = `#${pedidoId}`;
+        addressEl.textContent = pedido.direccion_envio || "Dirección no registrada";
+        totalEl.textContent = `$${pedido.total.toLocaleString('es-CL')}`;
+
+        // 5. Llenar lista de productos
+        listContainer.innerHTML = '';
+        items.forEach(item => {
+            // Accedemos a los datos del producto relacionado
+            const nombreProd = item.productos ? item.productos.nombre : 'Producto eliminado';
+            const imgProd = item.productos ? item.productos.imagen : 'img/default.png';
+
+            listContainer.innerHTML += `
+                <div class="detail-item">
+                    <img src="${imgProd}" alt="img">
+                    <div class="detail-info">
+                        <div>${nombreProd}</div>
+                        <div class="detail-qty">x${item.cantidad} un. ($${item.precio_al_comprar.toLocaleString('es-CL')})</div>
+                    </div>
+                </div>
+            `;
+        });
+
+    } catch (error) {
+        console.error(error);
+        listContainer.innerHTML = "<p style='color:red'>Error al cargar detalles.</p>";
+    }
+};
+
+window.cerrarModalDetalles = () => {
+    document.getElementById('modal-order-details').classList.remove('active');
+};
