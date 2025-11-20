@@ -97,5 +97,184 @@
         <span id="notification-message"></span>
         <button class="close-notification">&times;</button>
     </div>
+
+    <div id="modal-exito" class="modal-overlay">
+    <div class="modal-content">
+        <div class="success-icon-container">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>¡Gracias por tu compra!</h2>
+        <p class="modal-text">Tu pedido ha sido confirmado y el stock ha sido reservado.</p>
+        <p id="modal-order-id" class="order-id-display">Orden #12345</p>
+        <button id="btn-modal-continuar" class="btn-modal">Ver mis pedidos</button>
+    </div>
+</div>
+
+<style>
+    /* Estilos del Modal */
+    .modal-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6); /* Fondo oscuro transparente */
+        display: none; /* Oculto por defecto */
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transform: scale(0.7);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.active .modal-content {
+        transform: scale(1);
+    }
+
+    .success-icon-container {
+        width: 80px; height: 80px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 20px auto;
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0.2);
+    }
+
+    .modal-content h2 { margin-bottom: 10px; color: #333; }
+    .modal-text { color: #666; margin-bottom: 20px; }
+    
+    .order-id-display {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: monospace;
+        color: #555;
+        font-weight: bold;
+        margin-bottom: 25px;
+        border: 1px dashed #ccc;
+    }
+
+    .btn-modal {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .btn-modal:hover { background: #218838; transform: translateY(-2px); }
+</style>
+
+<div id="modal-direccion" class="modal-overlay">
+    <div class="modal-content">
+        <div class="icon-container icon-address">
+            <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <h2>Dirección de Envío</h2>
+        <p class="modal-text">Por favor ingresa la dirección donde quieres recibir tus figuras:</p>
+        
+        <textarea id="input-direccion-texto" class="modal-input" placeholder="Ej: Av. Angamos 0610, Antofagasta..."></textarea>
+        
+        <div class="modal-buttons">
+            <button id="btn-cancelar-dir" class="btn-modal btn-secondary">Cancelar</button>
+            <button id="btn-confirmar-compra" class="btn-modal btn-primary">Confirmar Compra</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-exito" class="modal-overlay">
+    <div class="modal-content">
+        <div class="icon-container icon-success">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h2>¡Gracias por tu compra!</h2>
+        <p class="modal-text">Tu pedido ha sido confirmado y el stock ha sido reservado.</p>
+        <p id="modal-order-id" class="order-id-display">Orden #---</p>
+        <button id="btn-modal-continuar" class="btn-modal btn-primary btn-full">Ver mis pedidos</button>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<style>
+    /* --- Estilos de Modales --- */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: none; justify-content: center; align-items: center;
+        z-index: 10000; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { display: flex; opacity: 1; }
+    
+    .modal-content {
+        background: white; padding: 30px; border-radius: 15px;
+        text-align: center; width: 90%; max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.active .modal-content { transform: scale(1); }
+
+    .icon-container {
+        width: 70px; height: 70px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 30px; color: white; margin: 0 auto 20px auto;
+    }
+    .icon-success { background: #28a745; box-shadow: 0 0 0 8px rgba(40, 167, 69, 0.2); }
+    .icon-address { background: #007bff; box-shadow: 0 0 0 8px rgba(0, 123, 255, 0.2); }
+
+    .modal-input {
+        width: 100%; height: 80px; padding: 10px; border: 2px solid #eee;
+        border-radius: 8px; margin-bottom: 20px; resize: none; font-family: inherit;
+    }
+    .modal-input:focus { border-color: #007bff; outline: none; }
+
+    .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+    .btn-modal { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .btn-primary { background: #28a745; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-full { width: 100%; }
+
+    /* --- Estilos de Toast (Notificación bonita de Stock) --- */
+    #toast-container {
+        position: fixed; top: 20px; right: 20px; z-index: 11000;
+        display: flex; flex-direction: column; gap: 10px;
+    }
+    .toast {
+        background: white; padding: 15px 20px; border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex; align-items: center; gap: 10px;
+        animation: slideIn 0.3s ease forwards;
+        max-width: 300px; border-left: 5px solid #333;
+    }
+    .toast.error { border-left-color: #dc3545; }
+    .toast.error i { color: #dc3545; }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+</style>
 </body>
 </html>
