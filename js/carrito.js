@@ -1,10 +1,8 @@
 // Archivo: js/carrito.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Cargar los productos visualmente
+    console.log("Cargando carrito.js...");
     cargarCarrito();
-
-    // 2. Inicializar el botón de pago
     inicializarBotonCompra();
 });
 
@@ -15,7 +13,11 @@ function cargarCarrito() {
     
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-    carritoContainer.innerHTML = ''; 
+    // Limpiar contenedor
+    if (carritoContainer) carritoContainer.innerHTML = ''; 
+
+    // Validar elementos del DOM
+    if (!carritoContainer) return;
 
     if (carrito.length === 0) {
         carritoContainer.innerHTML = "<p class='carrito-vacio'>Tu carrito está vacío.</p>";
@@ -27,7 +29,6 @@ function cargarCarrito() {
     let subtotalGeneral = 0;
 
     carrito.forEach(producto => {
-        // Calculamos subtotal con el precio (que ya puede venir con oferta)
         const subtotalProducto = producto.precio * producto.cantidad;
         subtotalGeneral += subtotalProducto;
 
@@ -68,8 +69,6 @@ function cargarCarrito() {
     agregarEventosCantidad();
 }
 
-// --- EVENTOS DE ELIMINAR Y CANTIDAD (Tu lógica original) ---
-
 function agregarEventosEliminar() {
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(boton => {
@@ -91,7 +90,11 @@ function agregarEventosCantidad() {
             if (nuevaCantidad > stock) {
                 nuevaCantidad = stock;
                 e.currentTarget.value = stock;
-                alert(`Stock máximo alcanzado: ${stock}`);
+                if(typeof mostrarNotificacion === 'function') {
+                    mostrarNotificacion(`Stock máximo alcanzado: ${stock}`, 'error');
+                } else {
+                    alert(`Stock máximo: ${stock}`);
+                }
             }
 
             if (nuevaCantidad >= 1) {
@@ -105,91 +108,86 @@ function eliminarDelCarrito(idProducto) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     carrito = carrito.filter(producto => producto.id != idProducto);
     localStorage.setItem('carrito', JSON.stringify(carrito));
-    
     cargarCarrito(); 
-    if (typeof actualizarContadorCarrito === 'function') {
-        actualizarContadorCarrito();
-    }
+    if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
 }
 
 function actualizarCantidadEnCarrito(idProducto, cantidad, stock) {
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const productoEnCarrito = carrito.find(item => item.id == idProducto);
-
     if (productoEnCarrito) {
         productoEnCarrito.cantidad = cantidad;
         productoEnCarrito.stock = stock;
         localStorage.setItem('carrito', JSON.stringify(carrito));
         cargarCarrito();
-        if (typeof actualizarContadorCarrito === 'function') {
-            actualizarContadorCarrito();
-        }
+        if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
     }
 }
 
 // =========================================================
-// 💰 LÓGICA DE CHECKOUT (NUEVO)
+// 💰 LÓGICA DE CHECKOUT (CORREGIDA Y UNIFICADA)
 // =========================================================
 
 function inicializarBotonCompra() {
-    const btnComprarMiembro = document.querySelector('.btn-pagar-miembro');
-    const btnComprarInvitado = document.querySelector('.btn-pagar-invitado');
-
-    // Opción 1: Comprar como Miembro (Requiere Login)
-    if (btnComprarMiembro) {
-        btnComprarMiembro.addEventListener('click', async () => {
-            await procesarCompra(true);
+    // Buscamos el botón por ID, es más seguro
+    const btnComprar = document.getElementById('btn-comprar-final');
+    
+    if (btnComprar) {
+        console.log("Botón de compra encontrado y activado.");
+        
+        btnComprar.addEventListener('click', async () => {
+            console.log("Click en comprar realizado.");
+            await procesarCompraUnica();
         });
-    }
-
-    // Opción 2: Comprar como Invitado (Por ahora solo redirige al login o alerta)
-    if (btnComprarInvitado) {
-        btnComprarInvitado.addEventListener('click', () => {
-            alert("Para esta demostración, por favor compra como miembro.");
-            window.location.href = 'login.html';
-        });
+    } else {
+        console.error("ERROR: No se encontró el botón con id 'btn-comprar-final'");
     }
 }
 
-async function procesarCompra(requiereLogin) {
-    // 1. Verificar Carrito
+async function procesarCompraUnica() {
+    const btn = document.getElementById('btn-comprar-final');
+    
+    // 1. Validar Carrito Vacío
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     if (carrito.length === 0) {
-        alert("Tu carrito está vacío.");
+        mostrarNotificacion("Tu carrito está vacío.", "error");
         return;
     }
 
-    // 2. Verificar Usuario Logueado
+    // 2. Validar Usuario Logueado (Supabase)
+    // Si no está logueado, lo mandamos al login
     const { data: { user } } = await supabase.auth.getUser();
     
-    if (requiereLogin && !user) {
-        alert("Debes iniciar sesión para continuar.");
-        window.location.href = 'login.html';
+    if (!user) {
+        mostrarNotificacion("Debes iniciar sesión para completar la compra.", "error");
+        // Esperamos 2 segundos y redirigimos al login
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
         return;
     }
 
-    // 3. Pedir Dirección (Simple)
+    // 3. Pedir Dirección
     const direccion = prompt("Por favor, ingresa tu dirección de envío:", "Calle Falsa 123, Santiago");
-    if (!direccion) return; // Si cancela, salimos
+    if (!direccion) return; // Usuario canceló el prompt
 
     // --- INICIO PROCESO DE PAGO ---
     try {
-        const btn = document.querySelector('.btn-pagar-miembro');
+        // Deshabilitar botón para evitar doble compra
         if(btn) {
             btn.textContent = "Procesando...";
             btn.disabled = true;
         }
 
-        // A. Calcular Total
         const totalCompra = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
 
-        // B. Crear la Orden en tabla 'pedidos'
+        // A. Insertar en tabla 'pedidos'
         const { data: ordenData, error: ordenError } = await supabase
             .from('pedidos')
             .insert({
-                cliente_id: user.id, // ID del usuario logueado
-                fecha_pedido: new Date().toISOString(), // Fecha actual
-                estado: 'Completado', // Estado inicial
+                cliente_id: user.id,
+                fecha_pedido: new Date().toISOString(),
+                estado: 'Completado',
                 total: totalCompra,
                 direccion_envio: direccion
             })
@@ -199,8 +197,7 @@ async function procesarCompra(requiereLogin) {
         if (ordenError) throw ordenError;
         const pedidoId = ordenData.id;
 
-        // C. Guardar Detalles en 'pedido_items'
-        // Preparamos un array con todos los items para insertarlos de una vez
+        // B. Insertar detalles en 'pedido_items'
         const itemsParaInsertar = carrito.map(item => ({
             pedido_id: pedidoId,
             producto_id: item.id,
@@ -214,12 +211,9 @@ async function procesarCompra(requiereLogin) {
 
         if (itemsError) throw itemsError;
 
-        // D. Descontar Stock (Uno por uno)
-        // Nota: Para producción esto se hace mejor con una función RPC de SQL,
-        // pero para este proyecto lo haremos con un bucle simple.
+        // C. Descontar Stock en 'productos'
         for (const item of carrito) {
             const nuevoStock = item.stock - item.cantidad;
-            // Solo actualizamos si el stock no baja de 0
             if (nuevoStock >= 0) {
                 await supabase
                     .from('productos')
@@ -228,26 +222,32 @@ async function procesarCompra(requiereLogin) {
             }
         }
 
-        // 4. FINALIZAR
-        alert("¡Compra realizada con éxito! Gracias por tu preferencia.");
-        
-        // Vaciar carrito
-        localStorage.removeItem('carrito');
-        
-        // Actualizar contador visual
-        if (typeof actualizarContadorCarrito === 'function') {
-            actualizarContadorCarrito();
+        // D. Finalización Exitosa
+        if(typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion(`¡Compra exitosa! Pedido #${pedidoId} creado.`, "success");
+        } else {
+            alert("Compra exitosa");
         }
+        
+        localStorage.removeItem('carrito');
+        if (typeof actualizarContadorCarrito === 'function') actualizarContadorCarrito();
 
-        // Redirigir a la página de órdenes
-        window.location.href = 'orders.html';
+        // Redirigir a órdenes
+        setTimeout(() => {
+            window.location.href = 'orders.html';
+        }, 2000);
 
     } catch (error) {
-        console.error("Error en la compra:", error);
-        alert("Hubo un error al procesar tu pedido. Inténtalo de nuevo.");
-        const btn = document.querySelector('.btn-pagar-miembro');
+        console.error("Error CRÍTICO en la compra:", error);
+        if(typeof mostrarNotificacion === 'function') {
+            mostrarNotificacion("Hubo un error al procesar el pedido.", "error");
+        } else {
+            alert("Error al procesar el pedido.");
+        }
+        
+        // Reactivar botón si falló
         if(btn) {
-            btn.textContent = "Comprar como miembro";
+            btn.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> Comprar Ahora';
             btn.disabled = false;
         }
     }

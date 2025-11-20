@@ -50,14 +50,44 @@
                     </div>
                 </div>
 
-                <button class="btn-pagar-miembro">Comprar como miembro</button>
-                <button class="btn-pagar-invitado">Comprar como invitado</button>
+               <div class="acciones-compra">
+    <button id="btn-comprar-final" class="btn-pagar-unico">
+        <i class="fa-solid fa-cart-shopping"></i> Comprar Ahora
+    </button>
+</div>
+
+<style>
+    .btn-pagar-unico {
+        width: 100%;
+        padding: 15px;
+        background-color: #28a745; /* Color verde éxito */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+        margin-top: 15px;
+    }
+    .btn-pagar-unico:hover {
+        background-color: #218838;
+    }
+    .btn-pagar-unico:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+</style>
             </div>
 
         </div>
     </main>
     
-    <div id="footer-placeholder"></div>
+ <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="js/supabase-client.js"></script>
 
     <script src="js/main.js"></script> 
     <script src="js/carrito.js"></script> 
