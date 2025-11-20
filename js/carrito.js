@@ -157,6 +157,8 @@ function inicializarEventosCompra() {
     }
 }
 
+// REEMPLAZA ESTA FUNCIÓN EN js/carrito.js
+
 async function procesarTransaccionFinal(direccion) {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const btnConfirmar = document.getElementById('btn-confirmar-compra');
@@ -190,13 +192,31 @@ async function procesarTransaccionFinal(direccion) {
         const { error: errItems } = await supabase.from('pedido_items').insert(itemsInsert);
         if (errItems) throw errItems;
 
-        // C. Descontar Stock
+        // ============================================================
+        // C. DESCONTAR STOCK (Lógica corregida "En Tiempo Real")
+        // ============================================================
         for (const item of carrito) {
-            const nuevoStock = Math.max(0, item.stock - item.cantidad);
-            await supabase.from('productos').update({ stock: nuevoStock }).eq('id', item.id);
-        }
+            // 1. Consultamos el stock ACTUAL en la base de datos (no el del localstorage)
+            const { data: productoReal } = await supabase
+                .from('productos')
+                .select('stock')
+                .eq('id', item.id)
+                .single();
 
-        // D. Finalizar: Cerrar Modal Dirección y Abrir Modal Éxito
+            if (productoReal) {
+                // 2. Calculamos
+                const nuevoStock = Math.max(0, productoReal.stock - item.cantidad);
+                
+                // 3. Actualizamos
+                await supabase
+                    .from('productos')
+                    .update({ stock: nuevoStock })
+                    .eq('id', item.id);
+            }
+        }
+        // ============================================================
+
+        // D. Finalizar
         document.getElementById('modal-direccion').classList.remove('active');
         mostrarModalExito(orden.id);
 

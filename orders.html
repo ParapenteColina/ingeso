@@ -46,7 +46,7 @@
             </div>
         </div>
     </main>
-    
+
     <div id="footer-placeholder"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -54,6 +54,63 @@
     <script src="js/main.js"></script>
     
     <script src="js/orders.js"></script> 
+
+    <div id="modal-order-details" class="modal-overlay">
+    <div class="modal-content content-details">
+        <div class="details-header">
+            <h2>Detalles del Pedido <span id="detail-id">#0</span></h2>
+            <button class="close-modal-btn" onclick="cerrarModalDetalles()">&times;</button>
+        </div>
+        
+        <div class="details-body">
+            <div class="detail-group">
+                <label>Dirección de Envío:</label>
+                <p id="detail-address" class="address-box">Cargando...</p>
+            </div>
+
+            <div class="detail-group">
+                <label>Productos Comprados:</label>
+                <div id="detail-items-list" class="items-list-scroll">
+                    </div>
+            </div>
+            
+            <div class="detail-total">
+                <span>Total Pagado:</span>
+                <span id="detail-total-price">$0</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000;
+    }
+    .modal-overlay.active { display: flex; }
+    .content-details {
+        background: white; padding: 0; border-radius: 15px; width: 90%; max-width: 500px; overflow: hidden;
+    }
+    .details-header {
+        background: #f8f9fa; padding: 15px 20px; border-bottom: 1px solid #eee;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .details-header h2 { margin: 0; font-size: 1.2rem; }
+    .close-modal-btn { background: none; border: none; font-size: 25px; cursor: pointer; color: #666; }
+    
+    .details-body { padding: 20px; text-align: left; }
+    .detail-group { margin-bottom: 15px; }
+    .detail-group label { font-weight: bold; display: block; margin-bottom: 5px; color: #555; }
+    .address-box { background: #e9ecef; padding: 10px; border-radius: 6px; margin: 0; font-size: 0.9rem; }
+    
+    .items-list-scroll { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 5px; }
+    .detail-item { display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #eee; gap: 10px; }
+    .detail-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+    .detail-info { flex-grow: 1; font-size: 0.9rem; }
+    .detail-qty { font-weight: bold; color: #28a745; font-size: 0.8rem; }
+    
+    .detail-total { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #eee; display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; }
+</style>
     
 </body>
 </html>
