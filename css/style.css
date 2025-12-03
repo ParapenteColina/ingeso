@@ -10,12 +10,19 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f9;
+
     color: #333;
     min-height: 100vh; /* 1. El body mide MÍNIMO el 100% de la altura de la ventana */
     display: flex;
     flex-direction: column;
+
+
+    background-color: #f4f4f9;
+    /* Esto crea un patrón de puntos muy sutil */
+    background-image: radial-gradient(#cbd5e0 1px, transparent 1px);
+    background-size: 20px 20px;
 }
+
 /* * NUEVA REGLA GLOBAL DE TIPOGRAFÍA:
  * Aplica 'Bebas Neue' a todos tus títulos y elementos de "marca"
  */
@@ -226,20 +233,8 @@ main h1 {
     margin-bottom: 15px;
 }
 
-.add-to-cart-btn {
-    background-color: #1f1f1f;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background-color 0.3s;
-}
 
-.add-to-cart-btn:hover {
-    background-color: #000000;
-}
+
 
 /* --- Estilos para la Página de Inventario --- */
 .inventory-header {
@@ -510,7 +505,22 @@ main {
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     overflow: hidden; /* Mantiene las esquinas redondeadas en las imágenes */
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 5px solid transparent; /* Preparamos un borde */
 }
+
+
+
+
+
+.info-panel:hover {
+    transform: translateY(-10px); /* Se mueve un poco hacia arriba */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15); /* La sombra crece */
+    border-left: 5px solid #fdd835; /* Aparece un borde amarillo de "Comic" a la izquierda */
+}
+
+
 
 /* Esta regla invierte el orden para los paneles pares */
 .info-panel.panel-layout-reverse {
@@ -1184,4 +1194,26 @@ main {
 
 .add-to-cart-btn:hover {
     background-color: #e74c3c; /* Cambia a rojo al pasar el mouse */
+}
+
+/* --- ESTILO NUEVO PARA BOTONES --- */
+.add-to-cart-btn, .btn-more-info {
+    /* Estructura */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    
+    /* Diseño Azul Brillante */
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse */
+.add-to-cart-btn:hover, .btn-more-info:hover {
+    transform: translateY(-2px); /* Se mueve hacia arriba */
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4); /* Brilla más */
 }
