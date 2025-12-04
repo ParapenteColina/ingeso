@@ -383,3 +383,32 @@ h2 {
         gap: 0; /* Quita el gap en columnas */
     }
 }
+/* Input pequeño para edición rápida en la tabla */
+.input-precio-rapido {
+    width: 70px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: right;
+    font-size: 14px;
+}
+
+/* El botón de guardar al lado del precio */
+.btn-guardar-precio {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-guardar-precio:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Alineación de la celda de precio */
+td div[style*="display:flex"] {
+    justify-content: center; /* O flex-start si prefieres alineado a la izquierda */
+}

@@ -12,6 +12,9 @@ function cargarCarrito() {
     const subtotalPrecioEl = document.getElementById('subtotal-precio');
     const totalPrecioEl = document.getElementById('total-precio');
     
+    // Configuración para quitar decimales
+    const opcionesPrecio = { maximumFractionDigits: 0 }; 
+
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
     if (!carritoContainer) return;
@@ -38,7 +41,7 @@ function cargarCarrito() {
                     <img src="${producto.imagen}" alt="${producto.nombre}">
                     <div class="item-details">
                         <h4>${producto.nombre}</h4>
-                        <p>Precio: $${producto.precio.toLocaleString('es-CL')}</p>
+                        <p>Precio: $${producto.precio.toLocaleString('es-CL', opcionesPrecio)}</p>
                         <button class="btn-eliminar" data-id="${producto.id}">
                             <i class="fa-solid fa-trash"></i> Eliminar
                         </button>
@@ -51,15 +54,16 @@ function cargarCarrito() {
                     <span class="stock-info">Disp: ${producto.stock}</span>
                 </div>
                 <div class="item-subtotal">
-                    $${subtotalProducto.toLocaleString('es-CL')}
+                    $${subtotalProducto.toLocaleString('es-CL', opcionesPrecio)}
                 </div>
             </div>
         `;
         carritoContainer.innerHTML += productoHTML;
     });
 
-    if(subtotalPrecioEl) subtotalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
-    if(totalPrecioEl) totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL')}`;
+    // CORRECCIONES AQUÍ TAMBIÉN (Subtotal y Total general)
+    if(subtotalPrecioEl) subtotalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL', opcionesPrecio)}`;
+    if(totalPrecioEl) totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL', opcionesPrecio)}`;
     
     const btn = document.getElementById('btn-comprar-final');
     if(btn) { btn.disabled = false; btn.style.opacity = "1"; }

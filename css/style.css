@@ -10,6 +10,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
+    padding-top: 90px;
 
     color: #333;
     min-height: 100vh; /* 1. El body mide MÍNIMO el 100% de la altura de la ventana */
@@ -39,8 +40,11 @@ h1, h2, h3, .logo a, .main-nav a {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    position: sticky;
+    position: fixed; /* Cambiado de sticky a fixed */
     top: 0;
+    left: 0;
+    width: 100%; /* OBLIGATORIO en fixed, si no se encoge */
+    box-sizing: border-box; /* OBLIGATORIO para que el padding no rompa el ancho */
     z-index: 1000;
 }
 
@@ -1398,4 +1402,71 @@ main {
 
 .btn-save-stock i {
     margin-right: 0; /* Icono solo */
+}
+
+/* --- RESPONSIVE PARA EL CARRITO --- */
+@media (max-width: 768px) {
+
+    /* 1. Convertimos la fila en una columna (tarjeta vertical) */
+    .carrito-item {
+        flex-direction: column;
+        align-items: flex-start; /* Alinea todo a la izquierda o usa 'center' */
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        background: #fff;
+        position: relative; /* Para posicionar cosas absolutas si hace falta */
+    }
+
+    /* 2. Ajustamos la sección de info (Imagen y texto) */
+    .item-info {
+        width: 100%;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .item-info img {
+        width: 80px; /* Hacemos la imagen un poco más pequeña */
+        height: 80px;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+
+    /* 3. El contenedor de cantidad y subtotal */
+    .item-cantidad, 
+    .item-subtotal {
+        width: 100%;
+        display: flex;
+        justify-content: space-between; /* Separa etiqueta y valor */
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    /* Truco: Agregamos etiquetas falsas antes del contenido para que se entienda qué es qué */
+    .item-cantidad::before {
+        content: "Cantidad:";
+        font-weight: bold;
+        color: #555;
+    }
+
+    .item-subtotal::before {
+        content: "Subtotal:";
+        font-weight: bold;
+        color: #555;
+    }
+
+    .item-subtotal {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        border-top: 1px dashed #ccc; /* Una línea para separar el total */
+        padding-top: 10px;
+    }
+
+    /* 4. Ocultar los encabezados de la tabla si tienes uno arriba (Producto | Cantidad | Subtotal) */
+    .carrito-header, .encabezados-tabla { 
+        display: none; 
+    }
 }
