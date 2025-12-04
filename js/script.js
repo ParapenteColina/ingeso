@@ -1,17 +1,11 @@
-// script.js (Versión corregida y limpia)
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const productGrid = document.querySelector('.product-grid-inventory');
 
-    // --- 1. LEER PARÁMETROS DE LA URL ---
     const urlParams = new URLSearchParams(window.location.search);
     const urlSearchTerm = urlParams.get('q');
     const filterByOffer = urlParams.get('ofertas') === 'true';
 
-    // =====================================================================
-    // FUNCIÓN PRINCIPAL PARA CARGAR PRODUCTOS
-    // =====================================================================
     async function cargarProductos(searchTerm) {
 
         productGrid.innerHTML = '<h2>Cargando productos...</h2>';
@@ -21,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .select('*')
             .eq('activo', true);
 
-        // --- FILTRO: SOLO OFERTAS ---
         if (filterByOffer) {
             query = query.gt('descuento', 0);
 
@@ -31,13 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- FILTRO: BÚSQUEDA ---
         if (searchTerm) {
             const searchString = `%${searchTerm}%`;
             query = query.or(`nombre.ilike."${searchString}",descripcion.ilike."${searchString}"`);
         }
 
-        // --- EJECUTAR CONSULTA ---
+        
         const { data: productos, error } = await query;
 
         if (error) {
@@ -54,9 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // =====================================================================
-        // RENDERIZAR PRODUCTOS
-        // =====================================================================
+        
         productGrid.innerHTML = '';
 
         productos.forEach(producto => {
@@ -102,9 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             productGrid.innerHTML += cardHTML;
         });
 
-        // =====================================================================
-        // AÑADIR EVENTOS PARA BOTONES DE CARRITO
-        // =====================================================================
+        
         const botonesCarrito = document.querySelectorAll('.add-to-cart-btn');
 
         botonesCarrito.forEach(boton => {
@@ -114,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!productoSeleccionado) return;
 
-                // Calcular precio final con oferta
+                
                 const descuento = productoSeleccionado.descuento || 0;
                 const precioFinal = productoSeleccionado.precio * (1 - descuento / 100);
 
@@ -131,11 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-    } // fin de cargarProductos()
+    } 
 
-    // =====================================================================
-    // CARGA INICIAL
-    // =====================================================================
+    
     cargarProductos(urlSearchTerm);
 
 });

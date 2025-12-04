@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // 🔒 1. SEGURIDAD (Igual que en admin.js)
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = 'login.html'; return; }
 
@@ -11,30 +10,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 🚀 2. CARGAR ESTADÍSTICAS
     cargarMetricas();
     cargarStockBajo();
 });
 
 async function cargarMetricas() {
-    // A. Total de Clientes
     const { count: totalClientes } = await supabase
         .from('clientes')
         .select('*', { count: 'exact', head: true });
 
     document.getElementById('total-clientes').textContent = totalClientes || 0;
 
-    // B. Total de Pedidos y Ventas
-    // (Traemos solo la columna 'total' de la tabla 'pedidos')
     const { data: pedidos, error } = await supabase
         .from('pedidos')
         .select('total');
 
     if (!error && pedidos) {
-        // Cantidad de pedidos
         document.getElementById('total-pedidos').textContent = pedidos.length;
 
-        // Suma total del dinero (reduce suma todos los totales)
         const sumaVentas = pedidos.reduce((acc, pedido) => acc + Number(pedido.total), 0);
         document.getElementById('total-ventas').textContent = `$${Math.round(sumaVentas).toLocaleString('es-CL')}`;
     }

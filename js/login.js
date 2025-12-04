@@ -1,18 +1,16 @@
-// Esperar a que todo el HTML esté cargado
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Referencias a los Formularios ---
+    
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const loginFeedback = document.getElementById('login-feedback');
     const registerFeedback = document.getElementById('register-feedback');
 
-    // --- Referencias para dar la vuelta ---
     const flipper = document.querySelector('.form-flipper');
     const showRegister = document.getElementById('show-register');
     const showLogin = document.getElementById('show-login');
 
-    // --- Lógica para dar la vuelta ---
     showRegister.addEventListener('click', (e) => {
         e.preventDefault();
         flipper.classList.add('is-flipped');
@@ -23,17 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         flipper.classList.remove('is-flipped');
     });
 
-    // ===================================
-    //  LÓGICA DE REGISTRO
-    // ===================================
-    // ===================================
-//  LÓGICA DE REGISTRO (CORREGIDA)
-// ===================================
+
     registerForm.addEventListener('submit', async (event) => {
         event.preventDefault(); 
     
-        // 1. Obtener los datos del formulario
-    // --- CORREGIDO: El ID era 'register-name' ---
+    
         const nombre = document.getElementById('register-name').value; 
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
@@ -42,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         registerFeedback.className = 'feedback-message';
 
         try {
-            // 2. Crear el usuario en Supabase Auth
+            
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: email,
                 password: password,
@@ -52,19 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const userId = authData.user.id;
 
-            // 3. Insertar en la tabla 'clientes'
+            
             const { error: profileError } = await supabase
                 .from('clientes')
                 .insert({
                     id: userId,
-                // --- CORREGIDO: La columna se llama 'nombre_completo' ---
+                
                     nombre_completo: nombre, 
                     es_admin: false 
                 });
 
             if (profileError) throw profileError; 
 
-            // 4. ¡Todo salió bien!
+            
             registerFeedback.textContent = '¡Cuenta creada! Revisa tu email para confirmar y luego inicia sesión.';
             registerFeedback.classList.add('success');
         
@@ -81,13 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 
-    // ===================================
-    //  LÓGICA DE INICIO DE SESIÓN (LOGIN)
-    // ===================================
+    
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        // 1. Obtener datos
+        
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
 
@@ -95,19 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
         loginFeedback.className = 'feedback-message';
 
         try {
-            // 2. Iniciar sesión con Supabase Auth
+            
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             });
 
-            if (error) throw error; // Si hay error, salta al catch
+            if (error) throw error; 
 
-            // 3. ¡Éxito! Redirigir al usuario
-            // (Supabase guarda la sesión automáticamente)
+            
             console.log('Inicio de sesión exitoso:', data.user);
             
-            // Redirigir a la página principal
+            
             window.location.href = 'index.html'; 
 
         } catch (error) {
