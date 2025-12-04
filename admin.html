@@ -4,23 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - FigurasPRO</title>
+    
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo">
-            <a href="index.html">FIGURASPRO</a>
-        </div>
-        <nav class="main-nav">
-            <a href="admin.html">Panel de Control</a>
-        </nav>
-        <div class="header-actions">
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
-    <main class="admin-dashboard">
+    <main class="admin-dashboard" style="margin-top: 100px;">
 
         <section class="form-container">
             <h2>Añadir Nuevo Producto</h2>
@@ -48,11 +41,19 @@
                         <input type="number" id="descuento" min="0" max="100" value="0">
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="imagen">URL de la Imagen:</label>
-                    <input type="url" id="imagen" required>
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" id="categoria" placeholder="Ej: Marvel, Star Wars" required>
                 </div>
-                <button type="submit" class="submit-btn">
+
+                <div class="form-group">
+                    <label for="imagen-archivo">Imagen del Producto:</label>
+                    <input type="file" id="imagen-archivo" accept="image/*" required>
+                    <small style="color: #666;">Formatos: JPG, PNG, WEBP</small>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="btn-add-submit">
                     <i class="fa-solid fa-plus"></i> Añadir Producto
                 </button>
                 <div id="feedback-message-add"></div>
@@ -66,17 +67,20 @@
                     <tr>
                         <th>Imagen</th>
                         <th>Nombre</th>
+                        <th>Categoría</th>
                         <th>Precio</th>
                         <th>Stock</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="lista-productos-body">
-                </tbody>
+                    </tbody>
             </table>
         </section>
 
     </main>
+
+    <div id="footer-placeholder"></div>
 
     <div id="modal-editar-overlay" class="modal-overlay hidden">
         <div class="modal-content">
@@ -107,14 +111,23 @@
                         <input type="number" id="edit-descuento" min="0" max="100" value="0">
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="edit-imagen">URL de la Imagen:</label>
-                    <input type="url" id="edit-imagen" required>
+                    <label for="edit-categoria">Categoría:</label>
+                    <input type="text" id="edit-categoria" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Imagen Actual:</label>
+                    <img id="edit-preview-img" src="" style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px; display: block; margin-bottom: 10px;">
+                    
+                    <label for="edit-imagen-archivo">Cambiar Imagen (Opcional):</label>
+                    <input type="file" id="edit-imagen-archivo" accept="image/*">
                 </div>
                 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" id="btn-cancelar-edicion">Cancelar</button>
-                    <button type="submit" class="submit-btn">
+                    <button type="submit" class="submit-btn" id="btn-edit-submit">
                         <i class="fa-solid fa-save"></i> Guardar Cambios
                     </button>
                 </div>
@@ -123,8 +136,10 @@
             <button class="modal-close" id="btn-cerrar-modal-x">&times;</button>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>
