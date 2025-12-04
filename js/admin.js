@@ -1,8 +1,6 @@
-// js/admin.js
-
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // Verificar que Supabase existe
+
     if (!window.supabase) {
         alert("Error: No se pudo conectar con Supabase. Revisa la consola.");
         return;
@@ -133,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const archivo = archivoInput.files[0];
 
         if (!archivo) {
-            return alert("⚠️ Por favor selecciona una imagen para el producto.");
+            return alert("Por favor selecciona una imagen para el producto.");
         }
 
         const textoOriginal = btnSubmit.innerHTML;

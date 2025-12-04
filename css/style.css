@@ -1346,3 +1346,28 @@ main {
         display: none; 
     }
 }
+
+.product-card {
+    position: relative;
+}
+
+
+.sold-out-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e74c3c; 
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+.product-card.no-stock img {
+    opacity: 0.6;
+    filter: grayscale(80%); 
+}
