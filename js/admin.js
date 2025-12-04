@@ -1,17 +1,40 @@
+// js/admin.js
+
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // 🔒 1. SEGURIDAD
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { window.location.href = 'login.html'; return; }
+    // Verificar que Supabase existe
+    if (!window.supabase) {
+        alert("Error: No se pudo conectar con Supabase. Revisa la consola.");
+        return;
+    }
 
-    const { data: cliente } = await supabase.from('clientes').select('es_admin').eq('id', user.id).single();
+    // =========================================================
+    // 🔒 1. SEGURIDAD (Login y Permisos)
+    // =========================================================
+    const { data: { user } } = await window.supabase.auth.getUser();
+    
+    // Si no hay usuario logueado, mandar al login
+    if (!user) { 
+        window.location.href = 'login.html'; 
+        return; 
+    }
+
+    // Verificar si es admin en la tabla 'clientes'
+    const { data: cliente } = await window.supabase
+        .from('clientes')
+        .select('es_admin')
+        .eq('id', user.id)
+        .single();
+
     if (!cliente || !cliente.es_admin) {
-        alert("Acceso denegado.");
+        alert("Acceso denegado: No tienes permisos de administrador.");
         window.location.href = 'index.html';
         return;
     }
 
+    // =========================================================
     // 📌 2. REFERENCIAS DOM
+    // =========================================================
     const listaProductosBody = document.getElementById('lista-productos-body');
     const formNuevoProducto = document.getElementById('form-nuevo-producto');
     
@@ -29,45 +52,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     let productosCache = [];
 
     // =========================================================
-    // ☁️ FUNCIÓN ESPECIAL: SUBIR IMAGEN A STORAGE
+    // ☁️ FUNCIÓN: SUBIR IMAGEN A STORAGE
     // =========================================================
     async function subirImagenASupabase(archivo) {
         try {
-            // 1. Crear un nombre único para el archivo (evita que se sobrescriban)
-            // Ejemplo: 1715629_batman.jpg
-            const nombreArchivo = `${Date.now()}_${archivo.name.replace(/\s/g, '_')}`;
+            const nombreLimpio = archivo.name.replace(/[^a-zA-Z0-9.]/g, '_');
+            const nombreArchivo = `${Date.now()}_${nombreLimpio}`;
 
-            // 2. Subir al Bucket 'imagenes-productos'
-            const { data, error } = await supabase.storage
-                .from('imagenes-productos') // <--- NOMBRE DE TU BUCKET
+            const { data, error } = await window.supabase.storage
+                .from('imagenes-productos') 
                 .upload(nombreArchivo, archivo);
 
             if (error) throw error;
 
-            // 3. Obtener la URL Pública
-            const { data: { publicUrl } } = supabase.storage
+            const { data: urlData } = window.supabase.storage
                 .from('imagenes-productos')
                 .getPublicUrl(nombreArchivo);
 
-            return publicUrl;
+            return urlData.publicUrl;
 
         } catch (error) {
             console.error("Error subiendo imagen:", error);
-            throw new Error("No se pudo subir la imagen. Verifica tu bucket.");
+            throw new Error("No se pudo subir la imagen al servidor.");
         }
     }
 
     // =========================================================
-    // 🚀 CARGAR PRODUCTOS
+    // 🚀 CARGAR PRODUCTOS (READ) - MODIFICADO PARA OFERTAS
     // =========================================================
     async function cargarProductos() {
         try {
-            const { data, error } = await supabase
+            const { data, error } = await window.supabase
                 .from('productos')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order('id', { ascending: true }); // Ordenar por ID para que no salten al editar
 
             if (error) throw error;
+
             productosCache = data;
             listaProductosBody.innerHTML = '';
 
@@ -77,16 +98,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             data.forEach(producto => {
-                const precio = Math.round(producto.precio).toLocaleString('es-CL');
+                const imgUrl = producto.imagen || 'https://via.placeholder.com/50';
+
+                // --- CAMBIO IMPORTANTE AQUÍ ---
+                // En lugar de texto plano, ponemos un input y un botón de guardar
                 const fila = `
                     <tr>
-                        <td><img src="${producto.imagen}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;"></td>
+                        <td><img src="${imgUrl}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;"></td>
                         <td>${producto.nombre}</td>
                         <td><span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.9em;">${producto.categoria || '-'}</span></td>
-                        <td>$${precio}</td>
+                        
+                        <td>
+                            <div style="display:flex; align-items:center; gap:5px;">
+                                <span style="font-size:0.8rem;">$</span>
+                                <input type="number" 
+                                       class="input-precio-rapido" 
+                                       data-id="${producto.id}" 
+                                       value="${producto.precio}"
+                                       style="width: 80px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                                <button class="btn-guardar-precio" data-id="${producto.id}" title="Guardar Precio" 
+                                        style="background: #28a745; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer;">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </div>
+                        </td>
+
                         <td>${producto.stock}</td>
                         <td>
-                            <button class="btn-action btn-edit" data-id="${producto.id}"><i class="fa-solid fa-pen pointer-events-none"></i></button>
+                            <button class="btn-action btn-edit" data-id="${producto.id}" style="margin-right:5px;"><i class="fa-solid fa-pen pointer-events-none"></i></button>
                             <button class="btn-action btn-delete" data-id="${producto.id}"><i class="fa-solid fa-trash pointer-events-none"></i></button>
                         </td>
                     </tr>
@@ -94,34 +133,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 listaProductosBody.innerHTML += fila;
             });
         } catch (error) {
-            listaProductosBody.innerHTML = `<tr><td colspan="6">Error: ${error.message}</td></tr>`;
+            console.error(error);
+            listaProductosBody.innerHTML = `<tr><td colspan="6">Error cargando productos.</td></tr>`;
         }
     }
 
     // ===============================================
-    // ➕ AÑADIR PRODUCTO (CON FILE UPLOAD)
+    // ➕ AÑADIR PRODUCTO (CREATE)
     // ===============================================
     formNuevoProducto.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const btnSubmit = document.getElementById('btn-add-submit');
         const archivoInput = document.getElementById('imagen-archivo');
-        const archivo = archivoInput.files[0]; // El archivo real
+        const archivo = archivoInput.files[0];
 
         if (!archivo) {
-            return alert("Por favor selecciona una imagen.");
+            return alert("⚠️ Por favor selecciona una imagen para el producto.");
         }
 
-        // Feedback visual de "Cargando..."
         const textoOriginal = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo...';
         btnSubmit.disabled = true;
 
         try {
-            // 1. Primero subimos la imagen
             const urlImagenSubida = await subirImagenASupabase(archivo);
 
-            // 2. Luego guardamos el producto con esa URL
             const nuevoProducto = {
                 nombre: document.getElementById('nombre').value,
                 descripcion: document.getElementById('descripcion').value,
@@ -129,14 +166,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 stock: parseInt(document.getElementById('stock').value),
                 categoria: document.getElementById('categoria').value,
                 descuento: parseInt(document.getElementById('descuento').value) || 0,
-                imagen: urlImagenSubida, // <--- LA URL QUE OBTUVIMOS
+                imagen: urlImagenSubida,
                 activo: true
             };
 
-            const { error } = await supabase.from('productos').insert([nuevoProducto]);
+            const { error } = await window.supabase.from('productos').insert([nuevoProducto]);
+            
             if (error) throw error;
 
-            mostrarFeedback('¡Producto e Imagen guardados!', 'success', feedbackMessageAdd);
+            mostrarFeedback('¡Producto guardado exitosamente!', 'success', feedbackMessageAdd);
             formNuevoProducto.reset();
             await cargarProductos();
 
@@ -149,26 +187,77 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // ===============================================
-    // ⚙️ BOTONES (EDITAR/BORRAR)
-    // ===============================================
+    // ===============================================================
+    // ⚙️ BOTONES DE LA TABLA (Delegación: Edit, Delete y PRECIO)
+    // ===============================================================
     listaProductosBody.addEventListener('click', async (event) => {
         const btnDelete = event.target.closest('.btn-delete');
         const btnEdit = event.target.closest('.btn-edit');
+        const btnGuardarPrecio = event.target.closest('.btn-guardar-precio'); // NUEVO BOTÓN
 
-        if (btnDelete && confirm('¿Borrar producto?')) {
-            const id = btnDelete.dataset.id;
-            await supabase.from('productos').delete().eq('id', id);
-            await cargarProductos();
+        // --- 1. GUARDAR PRECIO RÁPIDO ---
+        if (btnGuardarPrecio) {
+            const id = btnGuardarPrecio.dataset.id;
+            // Buscamos el input que está en el mismo contenedor
+            const input = btnGuardarPrecio.parentElement.querySelector('.input-precio-rapido');
+            const nuevoPrecio = parseFloat(input.value);
+
+            if (!nuevoPrecio || nuevoPrecio < 0) {
+                alert("Precio inválido");
+                return;
+            }
+
+            // Cambiar icono a cargando
+            const originalIcon = btnGuardarPrecio.innerHTML;
+            btnGuardarPrecio.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btnGuardarPrecio.disabled = true;
+
+            try {
+                const { error } = await window.supabase
+                    .from('productos')
+                    .update({ precio: nuevoPrecio })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                // Feedback visual de éxito
+                btnGuardarPrecio.innerHTML = '<i class="fa-solid fa-check-double"></i>';
+                btnGuardarPrecio.style.background = '#155724'; // Verde oscuro
+                
+                setTimeout(() => {
+                    btnGuardarPrecio.innerHTML = originalIcon;
+                    btnGuardarPrecio.style.background = '#28a745';
+                    btnGuardarPrecio.disabled = false;
+                }, 1500);
+
+            } catch (error) {
+                alert("Error al actualizar precio");
+                console.error(error);
+                btnGuardarPrecio.innerHTML = originalIcon;
+                btnGuardarPrecio.disabled = false;
+            }
         }
 
+        // --- 2. BORRAR ---
+        if (btnDelete && confirm('¿Estás seguro de borrar este producto?')) {
+            const id = btnDelete.dataset.id;
+            try {
+                const { error } = await window.supabase.from('productos').delete().eq('id', id);
+                if(error) throw error;
+                await cargarProductos();
+            } catch(e) {
+                alert("Error al borrar: " + e.message);
+            }
+        }
+
+        // --- 3. EDITAR COMPLETO (MODAL) ---
         if (btnEdit) {
             abrirModalEdicion(btnEdit.dataset.id);
         }
     });
 
     // ===============================================
-    // 📝 MODAL EDICIÓN
+    // 📝 MODAL EDICIÓN (UPDATE)
     // ===============================================
     function abrirModalEdicion(id) {
         const p = productosCache.find(prod => prod.id == id);
@@ -182,7 +271,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('edit-descuento').value = p.descuento || 0;
         document.getElementById('edit-categoria').value = p.categoria || '';
         
-        // Mostrar vista previa y limpiar input de archivo
         previewImg.src = p.imagen; 
         document.getElementById('edit-imagen-archivo').value = ""; 
 
@@ -196,7 +284,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnCancelarEdicion.addEventListener('click', cerrarModalEdicion);
     btnCerrarModalX.addEventListener('click', cerrarModalEdicion);
 
-    // GUARDAR EDICIÓN
     modalForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -209,9 +296,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnEditSubmit.disabled = true;
 
         try {
-            let urlFinal = previewImg.src; // Por defecto, mantenemos la vieja
+            let urlFinal = previewImg.src;
 
-            // Si el usuario seleccionó una imagen nueva, la subimos
             if (archivoNuevo) {
                 urlFinal = await subirImagenASupabase(archivoNuevo);
             }
@@ -223,14 +309,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 stock: parseInt(document.getElementById('edit-stock').value),
                 categoria: document.getElementById('edit-categoria').value,
                 descuento: parseInt(document.getElementById('edit-descuento').value) || 0,
-                imagen: urlFinal // Guardamos la URL (nueva o vieja)
+                imagen: urlFinal
             };
 
-            const { error } = await supabase.from('productos').update(actualizaciones).eq('id', id);
+            const { error } = await window.supabase.from('productos').update(actualizaciones).eq('id', id);
+            
             if (error) throw error;
 
-            mostrarFeedback('¡Actualizado!', 'success', feedbackMessageEdit);
-            setTimeout(() => { cerrarModalEdicion(); cargarProductos(); }, 1000);
+            mostrarFeedback('¡Producto actualizado!', 'success', feedbackMessageEdit);
+            
+            setTimeout(() => { 
+                cerrarModalEdicion(); 
+                cargarProductos(); 
+            }, 1000);
 
         } catch (error) {
             mostrarFeedback(`Error: ${error.message}`, 'error', feedbackMessageEdit);
