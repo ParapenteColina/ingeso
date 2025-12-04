@@ -36,7 +36,7 @@ async function cargarOrdenes() {
             <tr>
                 <td>#${pedido.id}</td>
                 <td>${fecha}</td>
-                <td>$${pedido.total.toLocaleString('es-CL')}</td>
+                <td>$${Math.round(pedido.total).toLocaleString('es-CL')}</td>
                 <td><span class="status-badge ${estadoClass}">${pedido.estado}</span></td>
                 <td>
                     <button onclick="abrirModalDetalles(${pedido.id})" style="cursor:pointer; background:none; border:1px solid #007bff; color:#007bff; padding: 5px 10px; border-radius:4px;">
@@ -89,7 +89,7 @@ window.abrirModalDetalles = async (pedidoId) => {
         // 4. Llenar datos
         idEl.textContent = `#${pedidoId}`;
         addressEl.textContent = pedido.direccion_envio || "Dirección no registrada";
-        totalEl.textContent = `$${pedido.total.toLocaleString('es-CL')}`;
+        totalEl.textContent = `$${Math.round(pedido.total).toLocaleString('es-CL')}`;
 
         // 5. Llenar lista de productos
         listContainer.innerHTML = '';
@@ -98,12 +98,14 @@ window.abrirModalDetalles = async (pedidoId) => {
             const nombreProd = item.productos ? item.productos.nombre : 'Producto eliminado';
             const imgProd = item.productos ? item.productos.imagen : 'img/default.png';
 
+            const precioRedondeado = Math.round(item.precio_al_comprar);
+
             listContainer.innerHTML += `
                 <div class="detail-item">
                     <img src="${imgProd}" alt="img">
                     <div class="detail-info">
                         <div>${nombreProd}</div>
-                        <div class="detail-qty">x${item.cantidad} un. ($${item.precio_al_comprar.toLocaleString('es-CL')})</div>
+                        <div class="detail-qty">x${item.cantidad} un. ($${precioRedondeado.toLocaleString('es-CL')})</div>
                     </div>
                 </div>
             `;

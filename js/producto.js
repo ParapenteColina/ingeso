@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="product-detail-info">
                         <h1>${productoEncontrado.nombre}</h1>
-                        <p class="product-price-detail">$${productoEncontrado.precio.toLocaleString('es-CL')}</p>
+                        <p class="product-price-detail">$${Math.round(productoEncontrado.precio).toLocaleString('es-CL')}</p>
                         
                         <p class="product-description">
                             ${productoEncontrado.descripcion}

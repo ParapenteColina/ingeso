@@ -70,16 +70,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const precioHTML = tieneDescuento
                 ? `
-                    <span class="old-price-catalog">
-                        $${precioOriginal.toLocaleString('es-CL')}
-                    </span>
-                    <span class="product-price-catalog">
-                        $${precioFinal.toLocaleString('es-CL')}
-                    </span>
+                    <div class="price-wrapper">  <span class="old-price-catalog">
+                            $${Math.round(precioOriginal).toLocaleString('es-CL')}
+                        </span>
+                        <span class="product-price-catalog">
+                            $${Math.round(precioFinal).toLocaleString('es-CL')}
+                        </span>
+                    </div>
                 `
                 : `
                     <p class="product-price">
-                        $${precioFinal.toLocaleString('es-CL')}
+                        $${Math.round(precioFinal).toLocaleString('es-CL')}
                     </p>
                 `;
 
