@@ -188,15 +188,8 @@ async function updateAuthUI() {
         dropdownLogout.classList.add('hidden');
     }
 }
-
-/**
- * Función MÁS EFICIENTE: Trae el perfil completo (admin y nombre)
- * en una sola consulta.
- * @param {object} user - El objeto 'user' de Supabase
- * @returns {object} - { es_admin: boolean, nombre: string | null }
- */
 async function getClienteProfile(user) {
-    if (!user) return { es_admin: false, nombre: null }; 
+    if (!user) return { es_admin: false, nombre: null };
     
     try {
         const { data, error } = await supabase
@@ -210,7 +203,6 @@ async function getClienteProfile(user) {
         if (data) {
             return { es_admin: data.es_admin, nombre: data.nombre_completo };
         } else {
-            
             return { es_admin: false, nombre: null };
         }
     } catch (error) {
@@ -218,7 +210,6 @@ async function getClienteProfile(user) {
         return { es_admin: false, nombre: null };
     }
 }
-
 
 let notificationTimer; 
 
@@ -328,9 +319,16 @@ async function cargarOfertas() {
                 </div>
             `;
 
+ 
+            const sinStock = producto.stock < 1;
+            const etiquetaStock = sinStock ? '<div class="sold-out-badge">AGOTADO</div>' : '';
+            const claseCard = sinStock ? 'product-card no-stock' : 'product-card';
+            const textoBoton = sinStock ? 'Agotado' : 'Añadir al Carrito';
+            const estadoBoton = sinStock ? 'disabled' : '';
+
             ofertasHTML += `
-                <div class="product-card">
-                    <a href="producto.html?id=${producto.id}">
+                <div class="${claseCard}">
+                    ${etiquetaStock} <a href="producto.html?id=${producto.id}">
                         <img src="${producto.imagen}" alt="${producto.nombre}">
                     </a>
                     <div class="product-info">
@@ -338,8 +336,9 @@ async function cargarOfertas() {
                             <h3>${producto.nombre}</h3>
                         </a>
                         ${precioDisplay}
-                        <button class="add-to-cart-btn" data-id="${producto.id}">
-                            Añadir al Carrito
+                        
+                        <button class="add-to-cart-btn" data-id="${producto.id}" ${estadoBoton}>
+                            ${textoBoton}
                         </button>
                     </div>
                 </div>
@@ -372,11 +371,6 @@ async function cargarOfertas() {
         ofertasGrid.innerHTML = '<p>Error inesperado.</p>';
     }
 }
-
-
-
-
-
 function mostrarNotificacion(mensaje, tipo = "success") {
     const notification = document.getElementById('cart-notification');
     const iconEl = document.getElementById('notification-icon');
@@ -403,3 +397,24 @@ function mostrarNotificacion(mensaje, tipo = "success") {
         }, 3000);
     }
 }
+
+// ... (Dentro del DOMContentLoaded, al final) ...
+
+    // --- LÓGICA DEL BOTÓN DE SORTEO (Sección 3) ---
+    const btnParticipar = document.getElementById('btn-participar');
+
+    if (btnParticipar) {
+        btnParticipar.addEventListener('click', async () => {
+            // 1. Verificamos sesión
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (user) {
+                // CASO A: SI TIENE SESIÓN
+                // Ahora esto funcionará aunque no tengas el HTML en el footer
+                mostrarNotificacion("¡Genial! Ya estás participando en el sorteo.", "success");
+            } else {
+                // CASO B: NO TIENE SESIÓN
+                window.location.href = 'login.html';
+            }
+        });
+    }

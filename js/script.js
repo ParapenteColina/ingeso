@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const productGrid = document.querySelector('.product-grid-inventory');
 
+
     const urlParams = new URLSearchParams(window.location.search);
     const urlSearchTerm = urlParams.get('q');
     const filterByOffer = urlParams.get('ofertas') === 'true';
@@ -15,13 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .select('*')
             .eq('activo', true);
 
+        
         if (filterByOffer) {
             query = query.gt('descuento', 0);
-
             const mainHeader = document.querySelector('h1');
-            if (mainHeader) {
-                mainHeader.textContent = 'Grandes Ofertas de Figuras';
-            }
+            if (mainHeader) mainHeader.textContent = 'Grandes Ofertas de Figuras';
         }
 
         if (searchTerm) {
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
             query = query.or(`nombre.ilike."${searchString}",descripcion.ilike."${searchString}"`);
         }
 
-        
         const { data: productos, error } = await query;
 
         if (error) {
@@ -39,43 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!productos || productos.length === 0) {
-            productGrid.innerHTML =
-                searchTerm ?
-                `<h2>No se encontraron resultados para "${searchTerm}"</h2>` :
-                `<h2>No hay productos disponibles.</h2>`;
+            productGrid.innerHTML = searchTerm 
+                ? `<h2>No se encontraron resultados para "${searchTerm}"</h2>` 
+                : `<h2>No hay productos disponibles.</h2>`;
             return;
         }
 
-        
         productGrid.innerHTML = '';
 
         productos.forEach(producto => {
             const precioOriginal = producto.precio;
             const descuento = producto.descuento || 0;
             const tieneDescuento = descuento > 0;
-
-            const precioFinal = tieneDescuento
-                ? precioOriginal * (1 - descuento / 100)
-                : precioOriginal;
+            const precioFinal = tieneDescuento ? precioOriginal * (1 - descuento / 100) : precioOriginal;
 
             const precioHTML = tieneDescuento
-                ? `
-                    <div class="price-wrapper">  <span class="old-price-catalog">
-                            $${Math.round(precioOriginal).toLocaleString('es-CL')}
-                        </span>
-                        <span class="product-price-catalog">
-                            $${Math.round(precioFinal).toLocaleString('es-CL')}
-                        </span>
-                    </div>
-                `
-                : `
-                    <p class="product-price">
-                        $${Math.round(precioFinal).toLocaleString('es-CL')}
-                    </p>
-                `;
+                ? `<div class="price-wrapper">
+                     <span class="old-price-catalog">$${Math.round(precioOriginal).toLocaleString('es-CL')}</span>
+                     <span class="product-price-catalog">$${Math.round(precioFinal).toLocaleString('es-CL')}</span>
+                   </div>`
+                : `<p class="product-price">$${Math.round(precioFinal).toLocaleString('es-CL')}</p>`;
+
+            const sinStock = producto.stock < 1;
+            const etiquetaStock = sinStock ? '<div class="sold-out-badge">AGOTADO</div>' : '';
+            const claseCard = sinStock ? 'product-card no-stock' : 'product-card';
+            const textoBoton = sinStock ? 'Sin Stock' : 'Añadir al Carrito';
+            const estadoBoton = sinStock ? 'disabled' : '';
 
             const cardHTML = `
-                <div class="product-card">
+                <div class="${claseCard}">
+                    ${etiquetaStock} 
                     <a href="producto.html?id=${producto.id}">
                         <img src="${producto.imagen}" alt="${producto.nombre}">
                     </a>
@@ -83,8 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3>${producto.nombre}</h3>
                     </a>
                     ${precioHTML}
-                    <button class="add-to-cart-btn" data-id="${producto.id}">
-                        Añadir al Carrito
+                    
+                    <button class="add-to-cart-btn" data-id="${producto.id}" ${estadoBoton}>
+                        ${textoBoton}
                     </button>
                 </div>
             `;
@@ -92,17 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
             productGrid.innerHTML += cardHTML;
         });
 
-        
         const botonesCarrito = document.querySelectorAll('.add-to-cart-btn');
 
         botonesCarrito.forEach(boton => {
             boton.addEventListener('click', () => {
+                if(boton.disabled) return; 
+
                 const id = boton.dataset.id;
                 const productoSeleccionado = productos.find(p => p.id == id);
 
                 if (!productoSeleccionado) return;
 
-                
                 const descuento = productoSeleccionado.descuento || 0;
                 const precioFinal = productoSeleccionado.precio * (1 - descuento / 100);
 
@@ -118,10 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-
     } 
 
-    
     cargarProductos(urlSearchTerm);
-
 });

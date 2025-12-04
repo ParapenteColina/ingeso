@@ -189,7 +189,7 @@ h2 {
     padding: 15px 15px;
     text-align: left;
     color: var(--color-text);
-    border-bottom: none; /* Quitamos los bordes internos */
+    border-bottom: none; 
 }
 
 .product-table tbody tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
