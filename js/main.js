@@ -398,22 +398,19 @@ function mostrarNotificacion(mensaje, tipo = "success") {
     }
 }
 
-// ... (Dentro del DOMContentLoaded, al final) ...
 
-    // --- LÓGICA DEL BOTÓN DE SORTEO (Sección 3) ---
     const btnParticipar = document.getElementById('btn-participar');
 
     if (btnParticipar) {
         btnParticipar.addEventListener('click', async () => {
-            // 1. Verificamos sesión
+            
             const { data: { user } } = await supabase.auth.getUser();
 
             if (user) {
-                // CASO A: SI TIENE SESIÓN
-                // Ahora esto funcionará aunque no tengas el HTML en el footer
+               
                 mostrarNotificacion("¡Genial! Ya estás participando en el sorteo.", "success");
             } else {
-                // CASO B: NO TIENE SESIÓN
+
                 window.location.href = 'login.html';
             }
         });
