@@ -1,5 +1,3 @@
-// Archivo: js/orders.js
-
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarOrdenes();
 });
@@ -14,7 +12,6 @@ async function cargarOrdenes() {
         return;
     }
 
-    // Traer pedidos
     const { data: pedidos, error } = await supabase
         .from('pedidos')
         .select('*')
@@ -49,9 +46,7 @@ async function cargarOrdenes() {
     });
 }
 
-// --- LÓGICA DEL MODAL DE DETALLES ---
 
-// Esta función se llama desde el HTML generado arriba
 window.abrirModalDetalles = async (pedidoId) => {
     const modal = document.getElementById('modal-order-details');
     const listContainer = document.getElementById('detail-items-list');
@@ -59,22 +54,18 @@ window.abrirModalDetalles = async (pedidoId) => {
     const totalEl = document.getElementById('detail-total-price');
     const idEl = document.getElementById('detail-id');
 
-    // 1. Mostrar modal cargando
     modal.classList.add('active');
     addressEl.textContent = "Cargando datos...";
     listContainer.innerHTML = "<p style='padding:10px; text-align:center'>Cargando productos...</p>";
 
     try {
-        // 2. Obtener Info del Pedido (para la dirección)
         const { data: pedido } = await supabase
             .from('pedidos')
             .select('direccion_envio, total')
             .eq('id', pedidoId)
             .single();
 
-        // 3. Obtener los Items + Info del Producto (nombre, imagen)
-        // Nota: Esto requiere que tengas la relación (Foreign Key) bien hecha en Supabase.
-        // Si falla, usaremos un método alternativo abajo.
+        
         const { data: items, error } = await supabase
             .from('pedido_items')
             .select(`
@@ -86,15 +77,12 @@ window.abrirModalDetalles = async (pedidoId) => {
 
         if(error) throw error;
 
-        // 4. Llenar datos
         idEl.textContent = `#${pedidoId}`;
         addressEl.textContent = pedido.direccion_envio || "Dirección no registrada";
         totalEl.textContent = `$${Math.round(pedido.total).toLocaleString('es-CL')}`;
 
-        // 5. Llenar lista de productos
         listContainer.innerHTML = '';
         items.forEach(item => {
-            // Accedemos a los datos del producto relacionado
             const nombreProd = item.productos ? item.productos.nombre : 'Producto eliminado';
             const imgProd = item.productos ? item.productos.imagen : 'img/default.png';
 

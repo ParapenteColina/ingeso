@@ -8,18 +8,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // =========================================================
-    // 🔒 1. SEGURIDAD (Login y Permisos)
-    // =========================================================
+
     const { data: { user } } = await window.supabase.auth.getUser();
     
-    // Si no hay usuario logueado, mandar al login
     if (!user) { 
         window.location.href = 'login.html'; 
         return; 
     }
 
-    // Verificar si es admin en la tabla 'clientes'
     const { data: cliente } = await window.supabase
         .from('clientes')
         .select('es_admin')
@@ -32,17 +28,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // =========================================================
-    // 📌 2. REFERENCIAS DOM
-    // =========================================================
+
     const listaProductosBody = document.getElementById('lista-productos-body');
     const formNuevoProducto = document.getElementById('form-nuevo-producto');
     
-    // Feedback
     const feedbackMessageAdd = document.getElementById('feedback-message-add');
     const feedbackMessageEdit = document.getElementById('feedback-message-edit');
 
-    // Modal
     const modalOverlay = document.getElementById('modal-editar-overlay');
     const modalForm = document.getElementById('form-editar-producto');
     const btnCerrarModalX = document.getElementById('btn-cerrar-modal-x');
@@ -51,9 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let productosCache = [];
 
-    // =========================================================
-    // ☁️ FUNCIÓN: SUBIR IMAGEN A STORAGE
-    // =========================================================
     async function subirImagenASupabase(archivo) {
         try {
             const nombreLimpio = archivo.name.replace(/[^a-zA-Z0-9.]/g, '_');
@@ -77,15 +66,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // =========================================================
-    // 🚀 CARGAR PRODUCTOS (READ) - MODIFICADO PARA OFERTAS
-    // =========================================================
+
     async function cargarProductos() {
         try {
             const { data, error } = await window.supabase
                 .from('productos')
                 .select('*')
-                .order('id', { ascending: true }); // Ordenar por ID para que no salten al editar
+                .order('id', { ascending: true }); 
 
             if (error) throw error;
 
@@ -100,8 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             data.forEach(producto => {
                 const imgUrl = producto.imagen || 'https://via.placeholder.com/50';
 
-                // --- CAMBIO IMPORTANTE AQUÍ ---
-                // En lugar de texto plano, ponemos un input y un botón de guardar
+               
                 const fila = `
                     <tr>
                         <td><img src="${imgUrl}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;"></td>
@@ -138,9 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // ===============================================
-    // ➕ AÑADIR PRODUCTO (CREATE)
-    // ===============================================
+
     formNuevoProducto.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -187,18 +171,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // ===============================================================
-    // ⚙️ BOTONES DE LA TABLA (Delegación: Edit, Delete y PRECIO)
-    // ===============================================================
+
     listaProductosBody.addEventListener('click', async (event) => {
         const btnDelete = event.target.closest('.btn-delete');
         const btnEdit = event.target.closest('.btn-edit');
-        const btnGuardarPrecio = event.target.closest('.btn-guardar-precio'); // NUEVO BOTÓN
+        const btnGuardarPrecio = event.target.closest('.btn-guardar-precio'); 
 
-        // --- 1. GUARDAR PRECIO RÁPIDO ---
+        
         if (btnGuardarPrecio) {
             const id = btnGuardarPrecio.dataset.id;
-            // Buscamos el input que está en el mismo contenedor
+            
             const input = btnGuardarPrecio.parentElement.querySelector('.input-precio-rapido');
             const nuevoPrecio = parseFloat(input.value);
 
@@ -207,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Cambiar icono a cargando
+            
             const originalIcon = btnGuardarPrecio.innerHTML;
             btnGuardarPrecio.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btnGuardarPrecio.disabled = true;
@@ -220,9 +202,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (error) throw error;
 
-                // Feedback visual de éxito
+                
                 btnGuardarPrecio.innerHTML = '<i class="fa-solid fa-check-double"></i>';
-                btnGuardarPrecio.style.background = '#155724'; // Verde oscuro
+                btnGuardarPrecio.style.background = '#155724'; 
                 
                 setTimeout(() => {
                     btnGuardarPrecio.innerHTML = originalIcon;
@@ -238,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // --- 2. BORRAR ---
+        
         if (btnDelete && confirm('¿Estás seguro de borrar este producto?')) {
             const id = btnDelete.dataset.id;
             try {
@@ -250,15 +232,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // --- 3. EDITAR COMPLETO (MODAL) ---
+        
         if (btnEdit) {
             abrirModalEdicion(btnEdit.dataset.id);
         }
     });
 
-    // ===============================================
-    // 📝 MODAL EDICIÓN (UPDATE)
-    // ===============================================
+
     function abrirModalEdicion(id) {
         const p = productosCache.find(prod => prod.id == id);
         if (!p) return;

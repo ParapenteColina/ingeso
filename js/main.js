@@ -1,15 +1,13 @@
-// main.js (Versión final con Nombre de Usuario en Header)
-
 document.addEventListener('DOMContentLoaded', () => {
     cargarOfertas();
 
-    // Carga el Header
+    
     fetch('components/header.html')
         .then(response => response.text())
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
 
-            // --- LÓGICA DE BÚSQUEDA ---
+            
             const headerSearchInput = document.getElementById('header-search-input');
             const headerSearchButton = document.querySelector('.search-bar button');
             const suggestionsBox = document.getElementById('header-suggestions-box');
@@ -74,12 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     suggestionsBox.style.display = 'none';
                 }
             });
-            // --- FIN LÓGICA DE BÚSQUEDA ---
-            
-
-            // ===============================================
-            // INICIO: LÓGICA DE MENÚ DE USUARIO
-            // ===============================================
             
             const userMenuToggle = document.getElementById('user-menu-toggle');
             const userDropdown = document.getElementById('user-dropdown');
@@ -110,21 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            // Llamada Inicial para configurar el menú
+            
             updateAuthUI(); 
 
-            // ===============================================
-            // FIN: LÓGICA DE MENÚ DE USUARIO
-            // ===============================================
-
-
-            // --- Llamada a tu función de carrito ---
+            
             actualizarContadorCarrito();
 
         })
         .catch(error => console.error('Error al cargar el header:', error));
 
-    // Carga el Footer (código sin cambios)
+    
     fetch('components/footer.html')
         .then(response => response.text())
         .then(data => {
@@ -132,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error al cargar el footer:', error));
     
-    // --- Listener de Supabase ---
+    
     supabase.auth.onAuthStateChange((event, session) => {
         console.log('Cambio en estado de autenticación:', event);
         updateAuthUI(); 
@@ -141,25 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ==================================================================
-// FUNCIONES GLOBALES (Fuera de DOMContentLoaded)
-// ==================================================================
 
-// ===============================================
-// INICIO: FUNCIONES DE AUTENTICACIÓN (MODIFICADAS)
-// ===============================================
-
-/**
- * Actualiza la UI del header (nombre, enlaces y botones)
- * según si el usuario está logueado o no.
- */
 async function updateAuthUI() {
     const { data: { user } } = await supabase.auth.getUser();
     
-    // --- NUEVO: Elemento para el nombre ---
-    const userNameDisplay = document.getElementById('user-name-display'); 
     
-    // --- NUEVO: Trae el perfil (nombre + admin) ---
+    const userNameDisplay = document.getElementById('user-name-display'); 
     const { es_admin, nombre } = await getClienteProfile(user); 
 
     const dropdownProfile = document.getElementById('dropdown-profile');
@@ -168,31 +142,29 @@ async function updateAuthUI() {
     const dropdownStats = document.getElementById('dropdown-stats');
     const dropdownLogout = document.getElementById('dropdown-logout');
 
-    // Si los elementos no existen (header no ha cargado), no hagas nada
+    
     if (!dropdownProfile || !userNameDisplay) {
         return; 
     }
 
     if (user) {
-        // --- CASO 1: USUARIO ESTÁ LOGUEADO ---
         
-        // --- NUEVO: Muestra el nombre ---
         if (nombre) {
-            // Muestra solo el primer nombre
+            
             userNameDisplay.textContent = `Hola, ${nombre.split(' ')[0]}`;
             userNameDisplay.classList.add('show');
         } else {
-            // Fallback si el perfil no tiene nombre
+            
             userNameDisplay.textContent = `Hola`;
             userNameDisplay.classList.add('show');
         }
         
-        // Actualiza enlaces
+        
         dropdownProfile.href = 'profile.html';
         dropdownOrders.href = 'orders.html';
         dropdownLogout.classList.remove('hidden');
 
-        // Muestra/oculta enlaces de admin
+        
         if (es_admin) {
             dropdownAdmin.classList.remove('hidden');
             dropdownStats.classList.remove('hidden'); 
@@ -202,17 +174,15 @@ async function updateAuthUI() {
         }
 
     } else {
-        // --- CASO 2: USUARIO NO ESTÁ LOGUEADO ---
         
-        // --- NUEVO: Oculta el nombre ---
         userNameDisplay.textContent = '';
         userNameDisplay.classList.remove('show');
         
-        // Actualiza enlaces
+        
         dropdownProfile.href = 'login.html';
         dropdownOrders.href = 'login.html';
         
-        // Oculta enlaces
+        
         dropdownAdmin.classList.add('hidden');
         dropdownStats.classList.add('hidden'); 
         dropdownLogout.classList.add('hidden');
@@ -226,12 +196,12 @@ async function updateAuthUI() {
  * @returns {object} - { es_admin: boolean, nombre: string | null }
  */
 async function getClienteProfile(user) {
-    if (!user) return { es_admin: false, nombre: null }; // Default
+    if (!user) return { es_admin: false, nombre: null }; 
     
     try {
         const { data, error } = await supabase
             .from('clientes')
-            .select('es_admin, nombre_completo') // Trae ambos campos
+            .select('es_admin, nombre_completo') 
             .eq('id', user.id)
             .single();
 
@@ -240,7 +210,7 @@ async function getClienteProfile(user) {
         if (data) {
             return { es_admin: data.es_admin, nombre: data.nombre_completo };
         } else {
-            // El usuario está en auth, pero no en 'clientes'
+            
             return { es_admin: false, nombre: null };
         }
     } catch (error) {
@@ -249,12 +219,7 @@ async function getClienteProfile(user) {
     }
 }
 
-// ===============================================
-// FIN: FUNCIONES DE AUTENTICACIÓN
-// ===============================================
 
-
-// --- FUNCIONES DEL CARRITO (Tu código original) ---
 let notificationTimer; 
 
 function agregarAlCarrito(producto) {
@@ -308,28 +273,25 @@ function actualizarContadorCarrito() {
 }
 
 
-// AGREGAR o REEMPLAZAR esta función en js/main.js
 
 async function cargarOfertas() {
     const ofertasGrid = document.getElementById('ofertas-grid');
     
-    // 1. Verificación de existencia del contenedor
     if (!ofertasGrid) {
         console.warn("AVISO: No se encontró el div con id='ofertas-grid'. Si estás en el catálogo, ignora esto.");
         return; 
     }
 
-    console.log("Cargando ofertas..."); // Debug
+    console.log("Cargando ofertas..."); 
 
     try {
         ofertasGrid.innerHTML = '<p style="text-align:center; width:100%;">Cargando ofertas...</p>';
         
-        // 2. Consulta a Supabase
         const { data: productosOferta, error } = await supabase
             .from('productos')
             .select('*')
             .eq('activo', true)
-            .gt('descuento', 0) // Solo productos con descuento mayor a 0
+            .gt('descuento', 0) 
             .limit(4);
 
         if (error) {
@@ -338,7 +300,7 @@ async function cargarOfertas() {
             return;
         }
 
-        console.log("Productos encontrados:", productosOferta); // Debug
+        console.log("Productos encontrados:", productosOferta); 
 
         if (!productosOferta || productosOferta.length === 0) {
             ofertasGrid.innerHTML = '<p>No hay ofertas disponibles en este momento.</p>';
@@ -347,14 +309,11 @@ async function cargarOfertas() {
 
         let ofertasHTML = '';
         
-        // 3. Renderizado
         productosOferta.forEach(producto => {
             const precioOriginal = producto.precio;
             const porcentajeDescuento = producto.descuento;
-            // Calculamos precio final
             const precioFinal = precioOriginal * (1 - porcentajeDescuento / 100);
 
-            // Redondeamos para mostrar sin decimales
             const precioOrigStr = Math.round(precioOriginal).toLocaleString('es-CL');
             const precioFinalStr = Math.round(precioFinal).toLocaleString('es-CL');
 
@@ -389,7 +348,6 @@ async function cargarOfertas() {
 
         ofertasGrid.innerHTML = ofertasHTML;
         
-        // 4. Activar botones "Añadir al Carrito"
         const botones = ofertasGrid.querySelectorAll('.add-to-cart-btn');
         botones.forEach(boton => {
             boton.addEventListener('click', (e) => {
@@ -397,13 +355,11 @@ async function cargarOfertas() {
                 const productoSeleccionado = productosOferta.find(p => p.id == id);
                 
                 if (productoSeleccionado) {
-                    // Calculamos el precio real para guardarlo en el carrito
                     const precioConDescuento = productoSeleccionado.precio * (1 - productoSeleccionado.descuento / 100);
                     
-                    // Creamos una copia del producto con el precio modificado
                     const productoParaCarrito = {
                         ...productoSeleccionado,
-                        precio: precioConDescuento // Guardamos el precio ya rebajado
+                        precio: precioConDescuento 
                     };
                     
                     agregarAlCarrito(productoParaCarrito);
@@ -418,8 +374,7 @@ async function cargarOfertas() {
 }
 
 
-// Asegúrate de llamar a esta función al final de tu main.js
-// Ejemplo: document.addEventListener('DOMContentLoaded', () => { ... cargarOfertas(); });
+
 
 
 function mostrarNotificacion(mensaje, tipo = "success") {

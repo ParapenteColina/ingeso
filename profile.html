@@ -52,7 +52,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const profileContent = document.getElementById('profile-content');
             
-            // Verificar sesión
             const { data: { user } } = await supabase.auth.getUser();
             
             if (!user) {
@@ -60,7 +59,6 @@
                 return;
             }
 
-            // Obtener datos adicionales de la tabla clientes
             const { data: cliente, error } = await supabase
                 .from('clientes')
                 .select('*')

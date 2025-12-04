@@ -1,18 +1,14 @@
-// Archivo: js/carrito.js
-
 document.addEventListener('DOMContentLoaded', () => {
     cargarCarrito();
     inicializarEventosCompra();
 });
-
-// --- LÓGICA DE INTERFAZ ---
 
 function cargarCarrito() {
     const carritoContainer = document.getElementById('carrito-container');
     const subtotalPrecioEl = document.getElementById('subtotal-precio');
     const totalPrecioEl = document.getElementById('total-precio');
     
-    // Configuración para quitar decimales
+    
     const opcionesPrecio = { maximumFractionDigits: 0 }; 
 
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -61,7 +57,7 @@ function cargarCarrito() {
         carritoContainer.innerHTML += productoHTML;
     });
 
-    // CORRECCIONES AQUÍ TAMBIÉN (Subtotal y Total general)
+    
     if(subtotalPrecioEl) subtotalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL', opcionesPrecio)}`;
     if(totalPrecioEl) totalPrecioEl.textContent = `$${subtotalGeneral.toLocaleString('es-CL', opcionesPrecio)}`;
     
@@ -87,7 +83,7 @@ function agregarEventosCantidad() {
             const stockMax = parseInt(e.currentTarget.getAttribute('data-stock'));
             let val = parseInt(e.currentTarget.value);
 
-            // --- CAMBIO: Alerta bonita (Toast) en vez de alert() ---
+            
             if (val > stockMax) {
                 val = stockMax;
                 e.currentTarget.value = stockMax;
@@ -118,16 +114,12 @@ function actualizarCantidadEnCarrito(id, cant, stock) {
     }
 }
 
-// =========================================================
-// 💰 LÓGICA DE COMPRA CON MODALES
-// =========================================================
-
 function inicializarEventosCompra() {
     const btnComprar = document.getElementById('btn-comprar-final');
     const btnConfirmar = document.getElementById('btn-confirmar-compra');
     const btnCancelar = document.getElementById('btn-cancelar-dir');
 
-    // 1. Botón principal: Abre el modal de dirección
+    
     if (btnComprar) {
         btnComprar.addEventListener('click', async () => {
             const { data: { user } } = await supabase.auth.getUser();
@@ -136,12 +128,12 @@ function inicializarEventosCompra() {
                 setTimeout(() => window.location.href = 'login.html', 1500);
                 return;
             }
-            // Abrir Modal Dirección
+            
             document.getElementById('modal-direccion').classList.add('active');
         });
     }
 
-    // 2. Botón Confirmar en el Modal: Ejecuta la compra real
+    
     if (btnConfirmar) {
         btnConfirmar.addEventListener('click', () => {
             const direccion = document.getElementById('input-direccion-texto').value;
@@ -153,7 +145,7 @@ function inicializarEventosCompra() {
         });
     }
 
-    // 3. Botón Cancelar
+    
     if (btnCancelar) {
         btnCancelar.addEventListener('click', () => {
             document.getElementById('modal-direccion').classList.remove('active');
@@ -161,7 +153,6 @@ function inicializarEventosCompra() {
     }
 }
 
-// REEMPLAZA ESTA FUNCIÓN EN js/carrito.js
 
 async function procesarTransaccionFinal(direccion) {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -173,7 +164,7 @@ async function procesarTransaccionFinal(direccion) {
         
         const { data: { user } } = await supabase.auth.getUser();
 
-        // A. Crear Orden
+        
         const total = carrito.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
         const { data: orden, error: errOrden } = await supabase
             .from('pedidos')
@@ -188,7 +179,7 @@ async function procesarTransaccionFinal(direccion) {
 
         if (errOrden) throw errOrden;
 
-        // B. Insertar Items
+        
         const itemsInsert = carrito.map(i => ({
             pedido_id: orden.id, producto_id: i.id,
             cantidad: i.cantidad, precio_al_comprar: i.precio
@@ -196,11 +187,9 @@ async function procesarTransaccionFinal(direccion) {
         const { error: errItems } = await supabase.from('pedido_items').insert(itemsInsert);
         if (errItems) throw errItems;
 
-        // ============================================================
-        // C. DESCONTAR STOCK (Lógica corregida "En Tiempo Real")
-        // ============================================================
+        
         for (const item of carrito) {
-            // 1. Consultamos el stock ACTUAL en la base de datos (no el del localstorage)
+            
             const { data: productoReal } = await supabase
                 .from('productos')
                 .select('stock')
@@ -208,19 +197,19 @@ async function procesarTransaccionFinal(direccion) {
                 .single();
 
             if (productoReal) {
-                // 2. Calculamos
+                
                 const nuevoStock = Math.max(0, productoReal.stock - item.cantidad);
                 
-                // 3. Actualizamos
+                
                 await supabase
                     .from('productos')
                     .update({ stock: nuevoStock })
                     .eq('id', item.id);
             }
         }
-        // ============================================================
+        
 
-        // D. Finalizar
+        
         document.getElementById('modal-direccion').classList.remove('active');
         mostrarModalExito(orden.id);
 
@@ -247,7 +236,7 @@ function mostrarModalExito(orderId) {
     }
 }
 
-// --- FUNCIÓN PARA NOTIFICACIONES BONITAS (TOAST) ---
+
 function mostrarToast(mensaje, tipo = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -258,7 +247,7 @@ function mostrarToast(mensaje, tipo = 'info') {
     toast.innerHTML = `${icon} <span>${mensaje}</span>`;
     container.appendChild(toast);
 
-    // Desaparecer a los 3 segundos
+    
     setTimeout(() => {
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 300);

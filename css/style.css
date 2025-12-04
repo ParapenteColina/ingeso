@@ -1,7 +1,5 @@
-/* Importamos la nueva fuente: 'Bebas Neue' para un look de cómic más limpio */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap');
 
-/* --- Reset Básico y Estilos Generales --- */
 * {
     margin: 0;
     padding: 0;
@@ -11,28 +9,19 @@
 body {
     font-family: 'Roboto', sans-serif;
     padding-top: 90px;
-
     color: #333;
-    min-height: 100vh; /* 1. El body mide MÍNIMO el 100% de la altura de la ventana */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-
-
     background-color: #f4f4f9;
-    /* Esto crea un patrón de puntos muy sutil */
     background-image: radial-gradient(#cbd5e0 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
-/* * NUEVA REGLA GLOBAL DE TIPOGRAFÍA:
- * Aplica 'Bebas Neue' a todos tus títulos y elementos de "marca"
- */
 h1, h2, h3, .logo a, .main-nav a {
     font-family: 'Bebas Neue', sans-serif;
 }
 
-
-/* --- Barra de Navegación Superior --- */
 .main-header {
     background: linear-gradient(to right, #5999ff, #397dfc); 
     padding: 15px 30px;
@@ -40,18 +29,18 @@ h1, h2, h3, .logo a, .main-nav a {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    position: fixed; /* Cambiado de sticky a fixed */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* OBLIGATORIO en fixed, si no se encoge */
-    box-sizing: border-box; /* OBLIGATORIO para que el padding no rompa el ancho */
+    width: 100%;
+    box-sizing: border-box;
     z-index: 1000;
 }
 
 .logo a {
     text-decoration: none;
     font-size: 36px;
-    color: #fdd835; /* Amarillo brillante */
+    color: #fdd835;
     letter-spacing: 2px;
     text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8); 
 }
@@ -68,22 +57,22 @@ h1, h2, h3, .logo a, .main-nav a {
 
 .main-nav a {
     text-decoration: none;
-    color: #fff;  /* Texto blanco para mayor contraste */
+    color: #fff;
     font-weight: 700;
     transition: color 0.3s;
     font-size: 24px;
     letter-spacing: 1px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .main-nav a:hover {
-    color: #fdd835; /* Amarillo al pasar el mouse */
+    color: #fdd835;
 }
 
-/* --- Barra de Búsqueda --- */
 .search-bar {
     display: flex;
     width: 400px;
+    position: relative;
 }
 
 .search-bar input {
@@ -103,7 +92,6 @@ h1, h2, h3, .logo a, .main-nav a {
     border-radius: 0 5px 5px 0;
 }
 
-/* --- Opciones de Usuario (Perfil y Carrito) --- */
 .user-options {
     display: flex;
     align-items: center;
@@ -121,7 +109,6 @@ h1, h2, h3, .logo a, .main-nav a {
     color: #fdd835;
 }
 
-/* --- Menú Desplegable del Perfil --- */
 .profile-menu {
     position: relative;
 }
@@ -148,14 +135,12 @@ h1, h2, h3, .logo a, .main-nav a {
     padding: 12px 15px;
     text-decoration: none;
     color: #333;
-    
 }
 
 .dropdown li a:hover {
     background-color: #f4f4f9;
 }
 
-/* --- Carrito de Compras --- */
 .cart-button {
     position: relative;
     text-decoration: none;
@@ -173,7 +158,6 @@ h1, h2, h3, .logo a, .main-nav a {
     font-weight: 700;
 }
 
-
 main h1 {
     margin-bottom: 30px;
     font-size: 50px;
@@ -182,7 +166,6 @@ main h1 {
     text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
 }
 
-/* 1. Define la clase base con todo lo común Y el layout por defecto */
 .product-grid {
     display: grid; 
     gap: 30px; 
@@ -191,13 +174,12 @@ main h1 {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-/* 2. El modificador SOLO cambia la propiedad que necesita */
 .product-grid-inventory {
-    display: grid; /* <--- ¡Esta es la línea que faltaba! */
+    display: grid;
     grid-template-columns: repeat(2, 1fr); 
-    gap: 30px; /* Añade espacio entre las tarjetas */
-    max-width: 1200px; /* Opcional, pero recomendado */
-    margin: 0 auto; /* Opcional, para centrar la cuadrícula */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .product-card {
@@ -208,18 +190,24 @@ main h1 {
     text-align: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between; 
+    align-items: center; 
+    height: 100%; 
+    padding: 15px;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .product-card img {
     width: 100%;
-    height: 350px; /* Dales una altura fija (juega con este número) */
-    object-fit: cover; /* Evita que la imagen se deforme */
-    object-position: top; /* <--- Esto centrará la parte superior de la imagen */
+    height: 350px;
+    object-fit: cover;
+    object-position: top;
     border-radius: 5px;
     margin-bottom: 15px;
 }
@@ -237,10 +225,6 @@ main h1 {
     margin-bottom: 15px;
 }
 
-
-
-
-/* --- Estilos para la Página de Inventario --- */
 .inventory-header {
     display: flex;
     justify-content: space-between;
@@ -271,7 +255,6 @@ main h1 {
     padding: 8px;
     color: #555;
 }
-/* --- Estilos para el Banner de Novedad Destacada --- */
 
 .featured-news-banner {
     display: flex;
@@ -333,22 +316,23 @@ main h1 {
 }
 
 .btn-more-info {
-    background-color: #007bff;
     color: white;
-    padding: 12px 25px;
+    border: none;
+    padding: 12px 20px;
     text-decoration: none;
     border-radius: 5px;
     font-weight: 700;
     align-self: flex-start;
-    transition: background-color 0.3s;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
 }
 
 .btn-more-info:hover {
-    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
 }
 
-
-/* --- Estilos para los Subtítulos de Sección (h2) --- */
 main h2 {
     font-size: 40px;
     color: #34495e;
@@ -357,17 +341,15 @@ main h2 {
     text-align: center;
     text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
-/* --- Estilos para el Panel de Administración --- */
 
 .admin-wrapper {
-    display: flex; /* Mantiene el layout de 2 columnas */
-    flex-grow: 1; /* ¡LA CLAVE! Hace que crezca para llenar el espacio */
+    display: flex;
+    flex-grow: 1;
 }
 
-/* --- Panel Izquierdo (Sidebar) --- */
 .admin-sidebar {
-    flex: 0 0 260px; /* Ancho fijo de 260px */
-    background-color: #2c3e50; /* Un color oscuro y profesional */
+    flex: 0 0 260px;
+    background-color: #2c3e50;
     color: #ecf0f1;
     padding: 20px;
 }
@@ -394,8 +376,8 @@ main h2 {
 }
 
 .sidebar-nav li a i {
-    margin-right: 15px; /* Espacio entre el ícono y el texto */
-    width: 20px; /* Alineación de los íconos */
+    margin-right: 15px;
+    width: 20px;
 }
 
 .sidebar-nav li a:hover {
@@ -403,13 +385,12 @@ main h2 {
 }
 
 .sidebar-nav li.active a {
-    background-color: #5999ff; /* Destaca la opción activa */
+    background-color: #5999ff;
     font-weight: 700;
 }
 
-/* --- Contenido Principal (Dashboard) --- */
 .admin-content {
-    flex-grow: 1; /* Ocupa el resto del espacio */
+    flex-grow: 1;
     padding: 40px;
     background-color: #f4f4f9;
 }
@@ -421,19 +402,24 @@ main h2 {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Grid responsivo */
-    gap: 25px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
 }
 
 .stat-card {
-    background-color: #ffffff;
+    background: white;
     padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
 }
 
 .stat-card i {
@@ -452,7 +438,6 @@ main h2 {
     font-weight: 700;
 }
 
-/* --- Gráfica de Barras (Simulada con CSS) --- */
 .chart-container {
     background-color: #ffffff;
     padding: 30px;
@@ -468,7 +453,7 @@ main h2 {
 .chart {
     display: flex;
     justify-content: space-around;
-    align-items: flex-end; /* Alinea las barras en la parte inferior */
+    align-items: flex-end;
     height: 250px;
 }
 
@@ -479,7 +464,7 @@ main h2 {
     text-align: center;
     color: white;
     font-weight: 700;
-    position: relative; /* Para el texto */
+    position: relative;
     transition: height 0.5s ease-out;
 }
 
@@ -490,60 +475,49 @@ main h2 {
     right: 0;
     color: #555;
 }
-/* --- Estilos para los Paneles Verticales de la Página Principal --- */
 
-/* Esta regla es importante para que los paneles se ajusten bien */
 main {
     padding: 0;
     text-align: left;
     flex-grow: 1;
 }
 
-
 .info-panel {
-    display: flex; /* La magia para poner imagen y texto lado a lado */
-    align-items: center; /* Centra el contenido verticalmente */
+    display: flex;
+    align-items: center;
     background-color: #ffffff;
-    max-width: 1400px; /* Un poco más ancho para un look más premium */
-    margin: 60px auto; /* Espacio entre paneles y centrado */
+    max-width: 1400px;
+    margin: 60px auto;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    overflow: hidden; /* Mantiene las esquinas redondeadas en las imágenes */
-
+    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-left: 5px solid transparent; /* Preparamos un borde */
+    border-left: 5px solid transparent;
 }
-
-
-
-
 
 .info-panel:hover {
-    transform: translateY(-10px); /* Se mueve un poco hacia arriba */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15); /* La sombra crece */
-    border-left: 5px solid #fdd835; /* Aparece un borde amarillo de "Comic" a la izquierda */
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    border-left: 5px solid #fdd835;
 }
 
-
-
-/* Esta regla invierte el orden para los paneles pares */
 .info-panel.panel-layout-reverse {
     flex-direction: row-reverse;
 }
 
 .panel-image {
-    flex: 1 1 50%; /* Cada parte (imagen y texto) ocupa el 50% */
+    flex: 1 1 50%;
 }
 
 .panel-image img {
     width: 100%;
-    height: auto; /* Cambiado a 'auto' para mantener la proporción */
+    height: auto;
     display: block;
 }
 
 .panel-content {
     flex: 1 1 50%;
-    padding: 60px; /* Más espacio interno */
+    padding: 60px;
 }
 
 .panel-content h2 {
@@ -559,54 +533,44 @@ main {
     color: #555;
 }
 
-/* style.css */
 .product-title-link,
 .product-title-link:visited {
     text-decoration: none;
-    color: inherit; /* Hereda el color del texto normal */
+    color: inherit;
 }
 
 .product-title-link:hover {
-    text-decoration: underline; /* Opcional: subraya al pasar el mouse */
+    text-decoration: underline;
 }
 
-/* --- Estilos para la Página de Detalle de Producto --- */
-
-/* Este es el contenedor principal que creamos con JS */
 .product-detail {
-    display: flex; /* ¡LA CLAVE! Activa el layout de 2 columnas */
-    gap: 40px; /* Un espacio entre la imagen y el texto */
+    display: flex;
+    gap: 40px;
     max-width: 1200px;
-    margin: 40px auto; /* Centra la caja en la página */
-    
-    /* Opcional: Hacemos que se vea como una gran tarjeta */
+    margin: 40px auto;
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* La columna de la imagen (Izquierda) */
 .product-detail-image {
-    flex: 1 1 50%; /* Ocupará el 50% del ancho */
+    flex: 1 1 50%;
 }
 
-/* La imagen DENTRO de la columna izquierda */
 .product-detail-image img {
-    width: 100%; /* La imagen se ajusta al 100% de su columna */
-    height: auto; /* Mantiene la proporción sin deformarse */
-    max-width: 100%; /* Seguridad extra */
+    width: 100%;
+    height: auto;
+    max-width: 100%;
     border-radius: 10px;
 }
 
-/* La columna de información (Derecha) */
 .product-detail-info {
-    flex: 1 1 50%; /* Ocupará el otro 50% */
+    flex: 1 1 50%;
 }
 
-/* Ajustes de texto para que se vea bien */
 .product-detail-info h1 {
-    font-size: 42px; /* Más grande que en la tarjeta */
+    font-size: 42px;
     margin-bottom: 20px;
 }
 
@@ -624,15 +588,10 @@ main {
 }
 
 .product-detail-info .add-to-cart-btn {
-    /* Opcional: hacer el botón más grande en esta página */
     padding: 15px 30px;
     font-size: 16px;
 }
 
-
-/* --- Estilos para Stock e Ícono en Página de Producto --- */
-
-/* Estilo para el texto de Stock */
 .product-stock {
     font-size: 18px;
     font-weight: 700;
@@ -640,29 +599,21 @@ main {
     margin-bottom: 25px;
 }
 
-/* Estilo para el número '0' (lo pone en rojo) */
 .product-stock span {
     color: #e74c3c; 
     font-size: 20px;
     padding-left: 5px;
 }
 
-/* Espacio entre el ícono del carrito y el texto */
 .product-detail-info .add-to-cart-btn i {
     margin-right: 10px; 
 }
 
-
-
-/* Footer estilo */
-/* --- Estilos para el Footer --- */
-
 .main-footer {
-    /* Usando el color oscuro de tu panel de admin */
     background-color: #2c3e50; 
     color: #ecf0f1;
     padding: 50px 0 0 0;
-    margin-top: 60px; /* Un espacio para que no se pegue al contenido */
+    margin-top: 60px;
 }
 
 .footer-container {
@@ -670,7 +621,6 @@ main {
     margin: 0 auto;
     padding: 0 20px;
     display: grid;
-    /* Crea 4 columnas en PC, y se ajusta a menos en móvil */
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
     gap: 30px;
 }
@@ -678,7 +628,6 @@ main {
 .footer-column h4 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 24px;
-    /* Usando el amarillo de tu logo */
     color: #fdd835; 
     margin-bottom: 20px;
     letter-spacing: 1px;
@@ -692,7 +641,7 @@ main {
 }
 
 .footer-column ul {
-    list-style: none; /* Quita los puntos de la lista */
+    list-style: none;
 }
 
 .footer-column a {
@@ -702,7 +651,7 @@ main {
 }
 
 .footer-column a:hover {
-    color: #fdd835; /* Amarillo al pasar el mouse */
+    color: #fdd835;
 }
 
 .footer-socials {
@@ -719,15 +668,11 @@ main {
     text-align: center;
     padding: 25px 0;
     margin-top: 40px;
-    border-top: 1px solid #34495e; /* Un borde sutil de separación */
+    border-top: 1px solid #34495e;
     font-size: 14px;
-    color: #95a5a6; /* Un gris claro para el copyright */
+    color: #95a5a6;
 }
 
-
-/* --- ESTILOS PARA LA PÁGINA DEL CARRITO --- */
-
-/* Contenedor principal de la página */
 .carrito-page {
     max-width: 1200px;
     margin: 2rem auto;
@@ -740,14 +685,12 @@ main {
     text-align: center;
 }
 
-/* Layout de 2 columnas (Grid es perfecto para esto) */
 .carrito-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* 2/3 para items, 1/3 para resumen */
+    grid-template-columns: 2fr 1fr;
     gap: 2rem;
 }
 
-/* --- COLUMNA IZQUIERDA (ITEMS) --- */
 .carrito-items {
     background-color: #ffffff;
     border-radius: 8px;
@@ -755,10 +698,9 @@ main {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Encabezado de la lista (Producto, Cantidad, Subtotal) */
 .items-header {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr; /* Debe coincidir con .carrito-item */
+    grid-template-columns: 2fr 1fr 1fr;
     padding-bottom: 0.75rem;
     border-bottom: 2px solid #f0f0f0;
     color: #888;
@@ -770,16 +712,14 @@ main {
     text-align: center;
 }
 
-/* Estilo para cada item individual */
 .carrito-item {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr; /* 3 columnas */
+    grid-template-columns: 2fr 1fr 1fr;
     align-items: center;
     padding: 1.5rem 0;
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* Columna 1: Info del producto (imagen + texto) */
 .item-info {
     display: flex;
     align-items: center;
@@ -802,7 +742,6 @@ main {
     color: #555;
 }
 
-/* Botón de eliminar (ícono y texto) */
 .btn-eliminar {
     background: none;
     border: none;
@@ -814,13 +753,12 @@ main {
     transition: color 0.2s;
 }
 .btn-eliminar:hover {
-    color: #d9534f; /* Rojo al pasar el mouse */
+    color: #d9534f;
 }
 .btn-eliminar .fa-trash {
     margin-right: 0.25rem;
 }
 
-/* Columna 2: Input de cantidad */
 .item-cantidad {
     display: flex;
     justify-content: center;
@@ -833,7 +771,6 @@ main {
     border-radius: 4px;
 }
 
-/* Columna 3: Subtotal del item */
 .item-subtotal {
     text-align: center;
     font-weight: 600;
@@ -847,13 +784,12 @@ main {
     color: #555;
 }
 
-/* --- COLUMNA DERECHA (RESUMEN) --- */
 .carrito-resumen {
     background-color: #ffffff;
     border-radius: 8px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    height: fit-content; /* Para que no se estire */
+    height: fit-content;
 }
 
 .carrito-resumen h3 {
@@ -869,7 +805,6 @@ main {
     padding-bottom: 1rem;
 }
 
-/* Líneas de Subtotal y Total */
 .resumen-total {
     border-top: 1px solid #f0f0f0;
     padding-top: 1rem;
@@ -889,13 +824,12 @@ main {
     margin-top: 1rem;
 }
 
-/* Botones de Pago (Estilo Nike) */
 .btn-pagar-miembro,
 .btn-pagar-invitado {
     width: 100%;
     padding: 1rem;
     border: none;
-    border-radius: 30px; /* Bordes redondeados */
+    border-radius: 30px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -903,7 +837,7 @@ main {
 }
 
 .btn-pagar-miembro {
-    background-color: #111111; /* Botón negro sólido */
+    background-color: #111111;
     color: #ffffff;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
@@ -915,30 +849,24 @@ main {
 .btn-pagar-invitado {
     background-color: #ffffff;
     color: #111111;
-    border: 1px solid #111111; /* Botón blanco con borde */
+    border: 1px solid #111111;
 }
 .btn-pagar-invitado:hover {
     background-color: #f4f4f4;
-/* --- Estilo para Sugerencias de Búsqueda --- */
-}
-/* Hacemos al padre "relative" para que la caja 
-   de sugerencias "absolute" se posicione bien */
-.search-bar {
-    position: relative; /* ¡MUY IMPORTANTE! */
 }
 
 .suggestions-box {
-    display: none; /* Oculta por defecto */
+    display: none;
     position: absolute;
-    top: 100%; /* Justo debajo del input */
+    top: 100%;
     left: 0;
-    width: 100%; /* Mismo ancho que el input */
+    width: 100%;
     background-color: #fff;
     border: 1px solid #ddd;
     border-top: none;
     max-height: 250px;
     overflow-y: auto;
-    z-index: 999; /* Por encima de otro contenido */
+    z-index: 999;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
@@ -972,7 +900,6 @@ main {
 }
 
 .cart-notification {
-    
     position: fixed;   
     bottom: 20px;     
     right: 20px;       
@@ -998,181 +925,153 @@ main {
     transform: translateX(0);
 }
 
-/* --- NUEVAS CLASES --- */
 .cart-notification.success {
     background-color: #1a1a1a;
     color: #ffffff;
 }
 
 .cart-notification.error {
-    background-color: #D9534F; /* Rojo de error */
+    background-color: #D9534F;
     color: #ffffff;
 }
-/* --- FIN NUEVAS CLASES --- */
-
 
 #notification-icon {
     font-size: 1.2rem;
 }
 
 .cart-notification.success #notification-icon {
-    color: #4CAF50; /* Verde */
+    color: #4CAF50;
 }
 
 .cart-notification.error #notification-icon {
-    color: #ffffff; /* Blanco */
+    color: #ffffff;
 }
 
-
 .cart-notification .close-notification {
-    /* ... (Tus estilos para el botón de cerrar) ... */
     background: none;
     border: none;
     color: #ffffff;
     font-size: 1.5rem;
     cursor: pointer;
-    margin-left: auto; /* Empuja el botón a la derecha */
+    margin-left: auto;
 }
-/* ================================================== */
-/* ESTILOS PARA EL MENÚ DE USUARIO DEL HEADER
-/* (Pega esto al final de tu css/style.css)
-/* ================================================== */
 
 .user-options {
     display: flex;
     align-items: center;
-    gap: 20px; /* Espacio entre el carrito y el icono de usuario */
+    gap: 20px;
 }
 
-/* --- Contenedor del Menú --- */
 .user-menu-container {
-    position: relative; /* Para que el dropdown se posicione respecto a esto */
+    position: relative;
 }
 
-/* --- Botón (Icono) --- */
 .user-icon-btn {
     background: none;
     border: none;
-    color: white; /* Color del icono (asumiendo header azul) */
-    font-size: 1.5rem; /* Tamaño del icono */
+    color: white;
+    font-size: 1.5rem;
     cursor: pointer;
     padding: 5px;
     transition: color 0.3s ease;
 }
 
 .user-icon-btn:hover {
-    color: #ffc107; /* Color de acento al pasar el ratón (amarillo) */
+    color: #ffc107;
 }
 
-/* --- El Menú Desplegable --- */
 .user-dropdown {
     position: absolute;
-    top: calc(100% + 15px); /* Posiciona el menú 15px debajo del botón */
-    right: 0; /* Alineado a la derecha */
+    top: calc(100% + 15px);
+    right: 0;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden; /* Para que los bordes redondeados se apliquen bien */
+    overflow: hidden;
     min-width: 200px;
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
-
-    /* Animación de aparición */
+    z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.2s ease-out;
 }
 
-/* Clase 'show' que añade/quita el JS */
 .user-dropdown.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
 
-/* --- Opciones del Menú --- */
 .user-dropdown .dropdown-item {
     display: block;
     padding: 12px 20px;
     text-decoration: none;
-    color: #333; /* Color del texto del menú */
+    color: #333;
     font-size: 1rem;
     transition: background-color 0.2s ease;
-    white-space: nowrap; /* Evita que el texto se rompa */
+    white-space: nowrap;
 }
 
 .user-dropdown .dropdown-item:hover {
-    background-color: #f4f7f6; /* Fondo suave al pasar el ratón */
+    background-color: #f4f7f6;
 }
 
-/* Estilo para el botón "Cerrar Sesión" */
 .user-dropdown button.dropdown-item {
     width: 100%;
     text-align: left;
     border: none;
     background: none;
     cursor: pointer;
-    font-family: inherit; /* Hereda la fuente */
-    color: #333; /* Hereda el color del texto */
+    font-family: inherit;
+    color: #333;
 }
 
-/* Clase para ocultar elementos con JS */
 .hidden {
     display: none !important;
 }
 .user-name-display {
-    color: white; /* Texto blanco (para el header azul) */
+    color: white;
     font-weight: 600;
     font-size: 1rem;
-    display: none; /* Oculto por defecto */
+    display: none;
 }
 
-/* Clase que se añade con JS cuando el usuario inicia sesión */
 .user-name-display.show {
-    display: block; /* Lo hace visible */
+    display: block;
 }
 
-/* Ajuste para el contenedor de menú (para alinear nombre e icono) */
 .user-menu-container {
     display: flex;
     align-items: center;
-    gap: 10px; /* Separa el nombre del icono si estuvieran juntos */
+    gap: 10px;
 }
 
-/* =========================================
-   ESTILOS DE OFERTAS Y PRECIOS
-   ========================================= */
-
-/* Contenedor de precios (para alinearlos bien) */
 .product-card p.product-price {
     display: flex;
-    justify-content: center; /* Centrado horizontalmente */
+    justify-content: center;
     align-items: center;
-    gap: 10px; /* Espacio entre el precio viejo y el nuevo */
+    gap: 10px;
     margin: 10px 0;
 }
 
-/* 1. PRECIO ANTIGUO (Tachado) */
 .old-price, 
 .old-price-catalog {
-    text-decoration: line-through; /* Esto hace la línea en medio */
-    color: #999; /* Color gris suave para que destaque menos */
-    font-size: 0.9rem; /* Un poco más pequeño */
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
     font-weight: normal;
 }
 
-/* 2. PRECIO NUEVO (Oferta) */
 .offer-price-main, 
 .product-price-catalog {
-    color: #e74c3c; /* Rojo vibrante (o usa #27ae60 para verde) */
-    font-weight: 800; /* Muy negrita */
-    font-size: 1.2rem; /* Más grande para resaltar */
+    color: #e74c3c;
+    font-weight: 800;
+    font-size: 1.2rem;
 }
 
-/* 3. MEJORA VISUAL DE LA TARJETA (Opcional) */
 .product-card {
     border: 1px solid #eee;
-    border-radius: 10px; /* Bordes redondeados */
+    border-radius: 10px;
     padding-bottom: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: white;
@@ -1184,13 +1083,11 @@ main {
     padding: 15px;
 }
 
-/* Efecto al pasar el mouse por encima de la tarjeta */
 .product-card:hover {
-    transform: translateY(-5px); /* Se levanta un poco */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Sombra suave */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* 4. BOTÓN DE AÑADIR AL CARRITO */
 .add-to-cart-btn {
     background-color: #111;
     color: white;
@@ -1206,32 +1103,26 @@ main {
 }
 
 .add-to-cart-btn:hover {
-    background-color: #e74c3c; /* Cambia a rojo al pasar el mouse */
+    background-color: #e74c3c;
 }
 
-/* --- ESTILO NUEVO PARA BOTONES --- */
 .add-to-cart-btn, .btn-more-info {
-    /* Estructura */
     color: white;
     border: none;
     padding: 12px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: 700;
-    
-    /* Diseño Azul Brillante */
     background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
     box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
     transition: all 0.3s ease;
 }
 
-/* Efecto al pasar el mouse */
 .add-to-cart-btn:hover, .btn-more-info:hover {
-    transform: translateY(-2px); /* Se mueve hacia arriba */
-    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4); /* Brilla más */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
 }
 
-/* Estilos para ofertas */
 .price-container {
     display: flex;
     justify-content: center;
@@ -1252,49 +1143,46 @@ main {
 }
 .price-wrapper {
     display: flex;
-    gap: 10px;        /* Espacio entre el precio viejo y el nuevo */
-    justify-content: center; /* Los centra horizontalmente */
+    gap: 10px;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 10px; /* Espacio extra antes del botón */
+    margin-bottom: 10px;
 }
-/* --- ESTILOS PÁGINA ESTADÍSTICAS --- */
 
 .stats-container {
-    max-width: 1000px;      /* Ancho máximo para que no se estire demasiado */
-    margin: 40px auto;      /* CENTRADO AUTOMÁTICO (Arriba/Abajo 40px, Izq/Der Auto) */
+    max-width: 1000px;
+    margin: 40px auto;
     padding: 20px;
     font-family: 'Segoe UI', sans-serif;
 }
 
 .page-title {
-    text-align: center;     /* Título centrado */
+    text-align: center;
     margin-bottom: 40px;
     font-size: 2.5rem;
     color: #333;
 }
 
-/* Grid para poner las tarjetas en fila */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsivo */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     margin-bottom: 50px;
 }
 
-/* Diseño de cada tarjeta */
 .stat-card {
     background: white;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     display: flex;
-    justify-content: space-between; /* Separa texto del icono */
+    justify-content: space-between;
     align-items: center;
     transition: transform 0.3s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+    transform: translateY(-5px);
 }
 
 .stat-info h3 {
@@ -1309,7 +1197,6 @@ main {
     color: #333;
 }
 
-/* Iconos de colores */
 .stat-icon {
     width: 50px;
     height: 50px;
@@ -1324,7 +1211,6 @@ main {
 .icon-orders { background-color: #e3f2fd; color: #1e88e5; }
 .icon-users { background-color: #f3e5f5; color: #8e24aa; }
 
-/* Tabla de Stock Bajo */
 .low-stock-section {
     background: white;
     padding: 30px;
@@ -1334,17 +1220,16 @@ main {
 
 .low-stock-section h2 {
     margin-bottom: 20px;
-    color: #e74c3c; /* Rojo alerta */
+    color: #e74c3c;
     text-align: center;
 }
-/* --- ESTILOS MEJORADOS PARA LA TABLA DE STOCK --- */
 
 .low-stock-section {
     background: white;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    overflow-x: auto; /* Para que no se rompa en móviles */
+    overflow-x: auto;
 }
 
 .admin-table {
@@ -1373,7 +1258,6 @@ main {
     background-color: #fafafa;
 }
 
-/* Estilo para el input de stock */
 .stock-input {
     width: 70px;
     padding: 6px;
@@ -1384,7 +1268,6 @@ main {
     margin-right: 5px;
 }
 
-/* Botón pequeño de guardar */
 .btn-save-stock {
     background-color: #2ecc71;
     color: white;
@@ -1401,25 +1284,21 @@ main {
 }
 
 .btn-save-stock i {
-    margin-right: 0; /* Icono solo */
+    margin-right: 0;
 }
 
-/* --- RESPONSIVE PARA EL CARRITO --- */
 @media (max-width: 768px) {
-
-    /* 1. Convertimos la fila en una columna (tarjeta vertical) */
     .carrito-item {
         flex-direction: column;
-        align-items: flex-start; /* Alinea todo a la izquierda o usa 'center' */
+        align-items: flex-start;
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 8px;
         margin-bottom: 15px;
         background: #fff;
-        position: relative; /* Para posicionar cosas absolutas si hace falta */
+        position: relative;
     }
 
-    /* 2. Ajustamos la sección de info (Imagen y texto) */
     .item-info {
         width: 100%;
         margin-bottom: 15px;
@@ -1428,23 +1307,21 @@ main {
     }
 
     .item-info img {
-        width: 80px; /* Hacemos la imagen un poco más pequeña */
+        width: 80px;
         height: 80px;
         object-fit: cover;
         margin-right: 15px;
     }
 
-    /* 3. El contenedor de cantidad y subtotal */
     .item-cantidad, 
     .item-subtotal {
         width: 100%;
         display: flex;
-        justify-content: space-between; /* Separa etiqueta y valor */
+        justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
     }
 
-    /* Truco: Agregamos etiquetas falsas antes del contenido para que se entienda qué es qué */
     .item-cantidad::before {
         content: "Cantidad:";
         font-weight: bold;
@@ -1461,11 +1338,10 @@ main {
         font-size: 1.2rem;
         font-weight: bold;
         color: #333;
-        border-top: 1px dashed #ccc; /* Una línea para separar el total */
+        border-top: 1px dashed #ccc;
         padding-top: 10px;
     }
 
-    /* 4. Ocultar los encabezados de la tabla si tienes uno arriba (Producto | Cantidad | Subtotal) */
     .carrito-header, .encabezados-tabla { 
         display: none; 
     }

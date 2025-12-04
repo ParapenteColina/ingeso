@@ -1,16 +1,13 @@
-/* --- Colores de FigurasPRO --- */
 :root {
-    --color-primary: #3f51b5; /* Azul oscuro principal (similar a tu header) */
-    --color-accent: #ffc107;  /* Amarillo/Naranja (si usas para resaltar) */
+    --color-primary: #3f51b5; 
+    --color-accent: #ffc107;  
     --color-light: #ffffff;
     --color-dark: #1a1a1a;
     --color-text: #333333;
     --color-text-light: #666666;
-    --color-bg-light: #f4f7f6; /* Fondo general */
+    --color-bg-light: #f4f7f6; 
     --color-border: #e0e0e0;
 }
-
-/* --- Estilos del Header (si lo copiaste de main.css, ajusta rutas) --- */
 .main-header {
     background-color: var(--color-primary);
     color: var(--color-light);
@@ -39,9 +36,6 @@
 .main-header .main-nav a:hover {
     color: var(--color-accent);
 }
-
-
-/* --- Estilos Generales del Panel --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--color-bg-light);
@@ -73,20 +67,20 @@ h2 {
     flex-wrap: wrap;
     gap: 30px;
     padding: 30px;
-    max-width: 1400px; /* Un poco más ancho para más espacio */
-    margin: 30px auto; /* Centra el dashboard */
+    max-width: 1400px; 
+    margin: 30px auto; 
 }
 
 .form-container, .table-container {
     background-color: var(--color-light);
     padding: 30px;
-    border-radius: 12px; /* Bordes más redondeados */
+    border-radius: 12px; 
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .form-container {
     flex: 1; 
-    min-width: 350px; /* Un poco más pequeño si quieres */
+    min-width: 350px; 
 }
 
 .table-container {
@@ -95,7 +89,6 @@ h2 {
     overflow-x: auto; 
 }
 
-/* --- Formulario de Añadir Producto --- */
 .form-group {
     margin-bottom: 20px;
 }
@@ -124,7 +117,7 @@ h2 {
 .form-group input:focus,
 .form-group textarea:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2); /* Sombra de foco azul */
+    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2); 
     outline: none;
 }
 
@@ -138,13 +131,13 @@ h2 {
     gap: 20px;
 }
 .form-group-row .form-group {
-    flex: 1; /* Ocupan el mismo espacio */
+    flex: 1; 
 }
 
 .submit-btn {
     width: 100%;
     padding: 15px;
-    background-color: var(--color-primary); /* Azul principal */
+    background-color: var(--color-primary);
     color: var(--color-light);
     border: none;
     border-radius: 6px;
@@ -159,33 +152,31 @@ h2 {
 }
 
 .submit-btn:hover {
-    background-color: #303f9f; /* Un azul un poco más oscuro al pasar el ratón */
+    background-color: #303f9f; 
     transform: translateY(-2px);
 }
 
-/* --- Estilos de la Tabla --- */
 .product-table {
     width: 100%;
-    border-collapse: separate; /* Para que border-spacing funcione */
-    border-spacing: 0 8px; /* Espacio entre filas */
+    border-collapse: separate; 
+    border-spacing: 0 8px; 
     margin-top: 20px;
 }
 
 .product-table thead th {
-    background-color: var(--color-bg-light); /* Fondo ligeramente gris para el encabezado */
+    background-color: var(--color-bg-light); 
     padding: 15px 15px;
     text-align: left;
     font-weight: 600;
     color: var(--color-dark);
     border-bottom: 2px solid var(--color-border);
-    /* Quitar bordes si estás usando border-spacing */
     border: none; 
 }
 
 .product-table tbody tr {
     background-color: var(--color-light);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border-radius: 8px; /* Bordes redondeados para cada fila */
+    border-radius: 8px; 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -201,16 +192,15 @@ h2 {
     border-bottom: none; /* Quitamos los bordes internos */
 }
 
-/* Redondea las esquinas de la primera y última celda de cada fila */
 .product-table tbody tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
 .product-table tbody tr td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
 
 .product-table td img {
-    width: 60px; /* Un poco más grande */
+    width: 60px; 
     height: 60px;
     object-fit: cover;
-    border-radius: 8px; /* Más redondeado */
+    border-radius: 8px; 
     border: 1px solid var(--color-border);
 }
 
@@ -232,14 +222,13 @@ h2 {
     transform: scale(1.1);
 }
 .product-table .btn-delete { 
-    color: #dc3545; /* Rojo de Font Awesome */
+    color: #dc3545; 
 }
 .product-table .btn-delete:hover {
     background-color: rgba(220, 53, 69, 0.1);
     transform: scale(1.1);
 }
 
-/* --- Estilos para los mensajes de feedback --- */
 #feedback-message-add, #feedback-message-edit {
     margin-top: 20px;
     padding: 15px;
@@ -247,7 +236,7 @@ h2 {
     text-align: center;
     font-weight: 600;
     display: block;
-    border: 1px solid transparent; /* Para que no se mueva al aparecer */
+    border: 1px solid transparent; 
 }
 
 #feedback-message-add.success, #feedback-message-edit.success {
@@ -261,21 +250,18 @@ h2 {
     color: #721c24;
     border-color: #f5c6cb;
 }
-
-/* --- Estilos del Modal (Ventana Emergente) --- */
-
 .modal-overlay {
     position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Más oscuro */
+    background-color: rgba(0, 0, 0, 0.7); 
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    opacity: 0; /* Empieza oculto */
+    opacity: 0; 
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -285,28 +271,22 @@ h2 {
     visibility: hidden;
     pointer-events: none; 
 }
-
-/* Mostrar el modal */
-.modal-overlay:not(.hidden) { /* Usamos :not(.hidden) para cuando NO tiene la clase hidden */
+.modal-overlay:not(.hidden) { 
     opacity: 1;
     visibility: visible;
 }
-
-
 .modal-content {
     background-color: var(--color-light);
     padding: 30px;
     border-radius: 12px;
     width: 100%;
-    max-width: 650px; /* Un poco más grande */
+    max-width: 650px; 
     position: relative;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-    transform: translateY(-30px) scale(0.9); /* Empieza un poco arriba y más pequeño */
+    transform: translateY(-30px) scale(0.9); 
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
-
-/* Animación cuando el modal está visible */
 .modal-overlay:not(.hidden) .modal-content {
     transform: translateY(0) scale(1);
     opacity: 1;
@@ -316,12 +296,12 @@ h2 {
     position: absolute;
     top: 15px;
     right: 20px;
-    font-size: 2.5rem; /* Más grande */
+    font-size: 2.5rem; 
     color: #999;
     background: none;
     border: none;
     cursor: pointer;
-    line-height: 1; /* Para que la 'x' esté centrada */
+    line-height: 1; 
     transition: color 0.2s ease;
 }
 .modal-close:hover {
@@ -337,7 +317,7 @@ h2 {
 
 .btn-cancel {
     padding: 12px 20px;
-    background-color: #6c757d; /* Gris */
+    background-color: #6c757d;
     color: white;
     border: none;
     border-radius: 6px;
@@ -349,14 +329,13 @@ h2 {
     background-color: #5a6268;
 }
 
-/* --- Responsive (para pantallas más pequeñas) --- */
 @media (max-width: 992px) {
     .admin-dashboard {
-        flex-direction: column; /* Apila las columnas */
+        flex-direction: column; 
         padding: 20px;
     }
     .form-container, .table-container {
-        min-width: unset; /* Quita el min-width */
+        min-width: unset; 
         width: 100%;
     }
     .main-header {
@@ -380,10 +359,9 @@ h2 {
     }
     .form-group-row {
         flex-direction: column;
-        gap: 0; /* Quita el gap en columnas */
+        gap: 0; 
     }
 }
-/* Input pequeño para edición rápida en la tabla */
 .input-precio-rapido {
     width: 70px;
     padding: 5px;
@@ -393,7 +371,6 @@ h2 {
     font-size: 14px;
 }
 
-/* El botón de guardar al lado del precio */
 .btn-guardar-precio {
     width: 30px;
     height: 30px;
@@ -408,7 +385,6 @@ h2 {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Alineación de la celda de precio */
 td div[style*="display:flex"] {
-    justify-content: center; /* O flex-start si prefieres alineado a la izquierda */
+    justify-content: center; 
 }
